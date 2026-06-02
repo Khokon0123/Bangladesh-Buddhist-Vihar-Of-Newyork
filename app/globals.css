@@ -1,0 +1,328 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Root variables for consistent theming */
+  :root {
+    --font-inter: var(--font-inter);
+    --font-merriweather: var(--font-merriweather);
+  }
+
+  /* Reset all margins and padding to eliminate white gaps */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Base body styles - optimized for performance */
+  body {
+    @apply bg-white text-neutral-900 antialiased;
+    @apply font-sans;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    /* Ensure proper text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Prevent flex/grid children from forcing overflow */
+  * {
+    min-width: 0;
+  }
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+    outline-style: solid;
+  }
+
+  /* Skip to main content link (hidden until focused) */
+  .skip-to-main {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4;
+    @apply focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white;
+    @apply focus:rounded-lg focus:shadow-lg;
+    position: absolute;
+    left: -9999px;
+  }
+  
+  .skip-to-main:focus {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    z-index: 9999;
+  }
+
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans text-primary-dark;
+    @apply font-semibold leading-tight;
+    /* Ensure headings are accessible */
+    scroll-margin-top: 2rem;
+  }
+
+  h1 {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-semibold;
+    @apply mb-6;
+  }
+
+  h2 {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-semibold;
+    @apply mb-5;
+  }
+
+  h3 {
+    @apply text-xl sm:text-2xl lg:text-3xl font-medium;
+    @apply mb-4;
+  }
+
+  h4 {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium;
+    @apply mb-3;
+  }
+
+  h5 {
+    @apply text-base sm:text-lg lg:text-xl font-medium;
+    @apply mb-2;
+  }
+
+  h6 {
+    @apply text-sm sm:text-base lg:text-lg font-medium;
+    @apply mb-2;
+  }
+
+  /* Paragraph styles */
+  p {
+    @apply text-base text-neutral-700;
+    @apply mb-4 leading-relaxed;
+  }
+
+  /* Link styles */
+  a {
+    @apply text-primary hover:text-primary-dark;
+    @apply transition-colors duration-200;
+    @apply underline-offset-4 hover:underline;
+  }
+
+  a:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* List styles */
+  ul,
+  ol {
+    @apply mb-4 pl-6;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  li {
+    @apply mb-2 text-neutral-700;
+  }
+
+  /* Blockquote styles */
+  blockquote {
+    @apply font-quote text-quote-lg text-neutral-600 italic;
+    @apply border-l-4 border-gold-500 pl-6 my-6;
+    @apply bg-neutral-50 py-4 pr-4 rounded-r-lg;
+    font-family: var(--font-merriweather), Georgia, serif;
+  }
+
+  /* Code styles */
+  code {
+    @apply bg-neutral-100 text-primary-dark;
+    @apply px-1.5 py-0.5 rounded text-sm;
+    @apply font-mono;
+  }
+
+  pre {
+    @apply bg-neutral-900 text-neutral-100;
+    @apply p-4 rounded-lg overflow-x-auto;
+    @apply mb-4;
+  }
+
+  pre code {
+    @apply bg-transparent text-neutral-100 p-0;
+  }
+
+  /* Image styles - prevent layout shift */
+  img {
+    @apply max-w-full h-auto;
+    /* Prevent CLS by ensuring images don't cause layout shift */
+    height: auto;
+  }
+
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  iframe {
+    max-width: 100%;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Aspect ratio containers to prevent CLS */
+  [class*="aspect-"] {
+    position: relative;
+  }
+  
+  [class*="aspect-"] > * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  /* Button and interactive element base styles */
+  button,
+  [role="button"] {
+    @apply cursor-pointer;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+
+  /* Make nav/header controls finger-friendly without bloating inline body links */
+  header a,
+  header button,
+  nav a,
+  nav button,
+  [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Form elements */
+  input,
+  textarea,
+  select {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+
+  /* Reduced motion preference - improves performance */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* Mobile performance optimizations */
+  @media (max-width: 768px) {
+    /* Reduce animations on mobile for better performance and battery life */
+    * {
+      animation-duration: 0.3s !important;
+      transition-duration: 0.2s !important;
+    }
+    
+    /* Optimize rendering on mobile - prioritize speed */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeSpeed; /* Prioritize speed over quality on mobile */
+    }
+    
+    /* Reduce shadow complexity on mobile for better GPU performance */
+    [class*="shadow"] {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Common overflow culprits */
+    pre {
+      max-width: 100%;
+    }
+  }
+  
+  /* Tablet: 768px – 1024px */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    body {
+      text-rendering: optimizeLegibility;
+    }
+  }
+
+  /* Desktop: 1024px and above */
+  @media (min-width: 1024px) {
+    body {
+      text-rendering: optimizeLegibility;
+    }
+  }
+
+  /* Desktop: better text rendering quality */
+  @media (min-width: 769px) {
+    body {
+      text-rendering: optimizeLegibility;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    a {
+      @apply underline;
+    }
+  }
+}
+
+@layer utilities {
+  /* Shimmer animation for hero overlay */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 8s ease-in-out infinite;
+  }
+}
