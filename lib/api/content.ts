@@ -118,7 +118,7 @@ export const eventsAPI = {
 
 // Navigation API
 export const navigationAPI = {
-  getItems: () => navigationItems.sort((a, b) => a.order - b.order),
+  getItems: () => [...navigationItems].sort((a, b) => a.order - b.order),
   getItemById: (id: string) => navigationItems.find(item => item.id === id),
 };
 

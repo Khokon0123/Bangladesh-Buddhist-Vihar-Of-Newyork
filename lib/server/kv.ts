@@ -14,15 +14,37 @@ export interface SiteSettings {
   footerQuoteAuthor: string;
 }
 
-function isKVAvailable(): boolean {
-  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+// Supports both Upstash direct env vars (new) and legacy Vercel KV env vars (old)
+function getRedisConfig(): { url: string; token: string } | null {
+  // Upstash direct (set by Vercel Marketplace → Upstash integration)
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return {
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    };
+  }
+  // Legacy Vercel KV names (kept for backwards compatibility)
+  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+    return {
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    };
+  }
+  return null;
+}
+
+async function getRedis() {
+  const config = getRedisConfig();
+  if (!config) return null;
+  const { Redis } = await import("@upstash/redis");
+  return new Redis({ url: config.url, token: config.token });
 }
 
 export async function getEvents(): Promise<TempleEvent[]> {
-  if (!isKVAvailable()) return [...staticEvents];
+  const redis = await getRedis();
+  if (!redis) return [...staticEvents];
   try {
-    const { kv } = await import("@vercel/kv");
-    const data = await kv.get<string>("events");
+    const data = await redis.get<string>("events");
     if (!data) return [...staticEvents];
     const parsed = typeof data === "string" ? JSON.parse(data) : data;
     return parsed as TempleEvent[];
@@ -32,11 +54,13 @@ export async function getEvents(): Promise<TempleEvent[]> {
 }
 
 export async function setEvents(events: TempleEvent[]): Promise<void> {
-  if (!isKVAvailable()) {
-    throw new Error("KV not available — set KV_REST_API_URL and KV_REST_API_TOKEN env vars");
+  const redis = await getRedis();
+  if (!redis) {
+    throw new Error(
+      "Redis not configured — set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN"
+    );
   }
-  const { kv } = await import("@vercel/kv");
-  await kv.set("events", JSON.stringify(events));
+  await redis.set("events", JSON.stringify(events));
   revalidatePath("/events");
 }
 
@@ -51,10 +75,10 @@ export async function getSettings(): Promise<SiteSettings> {
     footerQuote: siteConfig.footer.quote,
     footerQuoteAuthor: siteConfig.footer.quoteAuthor ?? "",
   };
-  if (!isKVAvailable()) return defaults;
+  const redis = await getRedis();
+  if (!redis) return defaults;
   try {
-    const { kv } = await import("@vercel/kv");
-    const data = await kv.get<string>("site_settings");
+    const data = await redis.get<string>("site_settings");
     if (!data) return defaults;
     const parsed = typeof data === "string" ? JSON.parse(data) : data;
     return parsed as SiteSettings;
@@ -64,10 +88,12 @@ export async function getSettings(): Promise<SiteSettings> {
 }
 
 export async function setSettings(settings: SiteSettings): Promise<void> {
-  if (!isKVAvailable()) {
-    throw new Error("KV not available — set KV_REST_API_URL and KV_REST_API_TOKEN env vars");
+  const redis = await getRedis();
+  if (!redis) {
+    throw new Error(
+      "Redis not configured — set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN"
+    );
   }
-  const { kv } = await import("@vercel/kv");
-  await kv.set("site_settings", JSON.stringify(settings));
+  await redis.set("site_settings", JSON.stringify(settings));
   revalidatePath("/");
 }

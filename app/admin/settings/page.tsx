@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { SiteSettings } from "@/lib/server/kv";
+import type { SiteSettings } from "@/lib/server/kv";
 
 type SettingsFormState = SiteSettings & { _loading: boolean; _error: string | null; _saved: boolean };
 

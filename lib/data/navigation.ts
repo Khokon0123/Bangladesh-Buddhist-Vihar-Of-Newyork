@@ -52,7 +52,7 @@ export const navigationItems: NavItem[] = [
     id: "practices",
     label: "Practices",
     type: "dropdown",
-    order: 6,
+    order: 7,
     items: [
       {
         id: "dhamma-school",
@@ -73,14 +73,14 @@ export const navigationItems: NavItem[] = [
     label: "Resources",
     href: "/resources",
     type: "link",
-    order: 7,
+    order: 8,
   },
   {
     id: "about",
     label: "About",
     href: "/about",
     type: "link",
-    order: 8,
+    order: 9,
   },
 ];
 

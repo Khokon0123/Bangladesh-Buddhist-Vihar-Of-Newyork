@@ -20,8 +20,6 @@ const nextConfig = {
   compress: true,
   // Production optimizations
   swcMinify: true,
-  // Output configuration
-  output: 'standalone', // Optimized for production deployment
   // Experimental features for better performance
   experimental: {
     // Disabled optimizeCss due to critters module issues in development
