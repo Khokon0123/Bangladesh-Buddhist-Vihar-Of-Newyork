@@ -42,12 +42,11 @@ export function verifyToken(token: string): Record<string, unknown> | null {
 }
 
 export function verifyPassword(plain: string): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
   if (!adminPassword) return false;
-  const a = Buffer.from(plain);
+  const a = Buffer.from(plain.trim());
   const b = Buffer.from(adminPassword);
   if (a.length !== b.length) {
-    // Still run timingSafeEqual with dummy to avoid timing leak
     crypto.timingSafeEqual(b, b);
     return false;
   }
