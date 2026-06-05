@@ -47,7 +47,11 @@ export async function getEvents(): Promise<TempleEvent[]> {
     const data = await redis.get<string>("events");
     if (!data) return [...staticEvents];
     const parsed = typeof data === "string" ? JSON.parse(data) : data;
-    return parsed as TempleEvent[];
+    const redisEvents = parsed as TempleEvent[];
+    // Merge: Redis events take priority; static events fill in anything not in Redis
+    const redisIds = new Set(redisEvents.map((e) => e.id));
+    const staticOnly = staticEvents.filter((e) => !redisIds.has(e.id));
+    return [...redisEvents, ...staticOnly];
   } catch {
     return [...staticEvents];
   }
