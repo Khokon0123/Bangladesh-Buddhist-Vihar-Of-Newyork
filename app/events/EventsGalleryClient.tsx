@@ -28,22 +28,6 @@ const CalendarIcon = () => (
   </svg>
 );
 
-const PhotoIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="w-5 h-5"
-    aria-hidden="true"
-  >
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <circle cx="8.5" cy="8.5" r="1.5" />
-    <polyline points="21 15 16 10 5 21" />
-  </svg>
-);
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
@@ -169,13 +153,6 @@ export default function EventsGalleryClient({
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-primary/30">
                           <CalendarIcon />
-                        </div>
-                      )}
-                      {/* Photo count badge */}
-                      {event.images.length > 1 && (
-                        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-medium">
-                          <PhotoIcon />
-                          {event.images.length} photos
                         </div>
                       )}
                     </div>
