@@ -13,7 +13,7 @@ export const events: TempleEvent[] = [
     images: [
       {
         id: "vipassana-2026-flyer",
-        src: "/images/vipassana-meditation-2026.jpeg",
+        src: "/images/vipassana-meditation-2026.jpg",
         alt: "Vipassana Meditation Course 2026 flyer — 8-day course at Bangladesh Buddhist Vihara of New York",
         caption: "Vipassana Bhavana Course 2026 — July 12–19",
       },
