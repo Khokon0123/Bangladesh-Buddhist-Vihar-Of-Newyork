@@ -3,6 +3,29 @@ import { TempleEvent } from "@/lib/types/content";
 export const events: TempleEvent[] = [
   // 2026 Events
   {
+    id: "vipassana-meditation-2026",
+    slug: "vipassana-meditation-2026",
+    title: "Vipassana Meditation Course 2026",
+    date: "2026-07-12",
+    year: 2026,
+    description:
+      "An 8-day Vipassana (Insight) Meditation Course conducted by Bhante U. Prajnadip Mahathero. The course runs from July 12 to July 19, 2026 at Bangladesh Buddhist Vihara of New York, 102-22 87th Avenue, Richmond Hill, NY 11418. The daily program includes an opening ceremony with precept-taking and Paritta Sutta recitation, short meditation practice from 6:00–7:00 PM, and a Dhamma Discourse at 7:00 PM each evening. Daily donation for meditators: breakfast $100, lunch $150, beverages $50 (total $300/day). Meditators are asked to bring personal necessities and bedding if possible. For registration contact: Bhante Muditaratna Bhikkhu (347) 876-4009, Bhante Munindravangsha Bhikkhu (323) 747-2714, or Bhante Bishuddivangsha Bhikkhu (929) 393-2347.",
+    images: [
+      {
+        id: "vipassana-2026-flyer",
+        src: "/images/vipassana-meditation-2026.jpeg",
+        alt: "Vipassana Meditation Course 2026 flyer — 8-day course at Bangladesh Buddhist Vihara of New York",
+        caption: "Vipassana Bhavana Course 2026 — July 12–19",
+      },
+      {
+        id: "vipassana-2026-2",
+        src: "/images/WhatsApp Image 2026-04-25 at 14.44.55.jpeg",
+        alt: "Bangladesh Buddhist Vihara of New York",
+        caption: "Bangladesh Buddhist Vihara of New York",
+      },
+    ],
+  },
+  {
     id: "vesak-2026",
     slug: "vesak-2026",
     title: "Vesak Celebration 2026",
