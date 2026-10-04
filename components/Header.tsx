@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import SiteSearch from "./SiteSearch";
 
 // Dharma Wheel Icon Component
 const DharmaWheelIcon = ({ className }: { className?: string }) => (
@@ -81,9 +82,24 @@ const CloseIcon = () => (
   </svg>
 );
 
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/learn-buddhism", label: "Learn Buddhism" },
+  { href: "/venerable-introduction", label: "Venerable Introduction" },
+  { href: "/blog", label: "Blog" },
+  { href: "/events", label: "Events" },
+  { href: "/book", label: "Book" },
+  { href: "/resources", label: "Resources" },
+  { href: "/practices/dhamma-school", label: "Dhamma School" },
+  { href: "/practices/meditation", label: "Meditation" },
+  { href: "/about", label: "About" },
+];
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const closeSearch = useCallback(() => setIsSearchOpen(false), []);
   const pathname = usePathname();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -145,114 +161,40 @@ export default function Header() {
             {/* Logo / Brand */}
             <Link
               href="/"
-              className="flex items-center gap-3 mr-4 sm:mr-8 lg:mr-12 min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="flex items-center gap-3 mr-6 shrink-0 no-underline hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               aria-label="Home"
             >
               <div className="text-white">
                 <DharmaWheelIcon className="w-8 h-8" />
               </div>
-              <span className="hidden sm:inline text-lg font-semibold text-white whitespace-nowrap">
+              <span className="hidden sm:inline xl:hidden min-[1480px]:inline text-lg font-semibold text-white whitespace-nowrap">
                 Bangladesh Buddhist Vihara Of New York
               </span>
             </Link>
 
-            {/* Desktop Navigation - Centered/Right */}
-            <div className="hidden lg:flex items-center flex-1 justify-center gap-8">
-              <Link
-                href="/"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Home
-              </Link>
-              <Link
-                href="/learn-buddhism"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/learn-buddhism" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Learn Buddhism
-              </Link>
-              <Link
-                href="/venerable-introduction"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/venerable-introduction" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Venerable Introduction
-              </Link>
-              <Link
-                href="/blog"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/blog" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Blog
-              </Link>
-              <Link
-                href="/events"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/events" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Events
-              </Link>
-              <Link
-                href="/book"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/book" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Book
-              </Link>
-              <Link
-                href="/resources"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/resources" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Resources
-              </Link>
-              <Link
-                href="/practices/dhamma-school"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/practices/dhamma-school" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Dhamma School
-              </Link>
-              <Link
-                href="/practices/meditation"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/practices/meditation" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                Meditation
-              </Link>
-              <Link
-                href="/about"
-                className={`
-                  text-sm font-sans text-white no-underline transition-all duration-300 hover:opacity-80
-                  ${pathname === "/about" ? "border-b-2 border-white pb-1" : ""}
-                `}
-              >
-                About
-              </Link>
+            {/* Desktop Navigation */}
+            <div className="hidden xl:flex items-center flex-1 justify-center gap-6 h-full">
+              {navLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`
+                    shrink-0 inline-flex items-center h-full text-sm font-sans text-white whitespace-nowrap no-underline hover:no-underline hover:text-white transition-opacity duration-300 hover:opacity-80 border-b-2
+                    ${pathname === href ? "border-white" : "border-transparent"}
+                  `}
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
 
             {/* Right Side: Search Icon */}
             <div className="flex items-center gap-4 ml-auto">
               <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsSearchOpen(true);
+                }}
                 className="text-white transition-opacity duration-300 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white rounded-lg p-2"
                 aria-label="Search"
               >
@@ -262,7 +204,7 @@ export default function Header() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden text-white transition-opacity duration-300 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white rounded-lg p-2"
+                className="xl:hidden text-white transition-opacity duration-300 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white rounded-lg p-2"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -282,7 +224,7 @@ export default function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/50 z-40 xl:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
               aria-hidden="true"
             />
@@ -294,7 +236,7 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl lg:hidden"
+              className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl xl:hidden"
               role="dialog"
               aria-modal="true"
               aria-label="Mobile navigation menu"
@@ -491,6 +433,8 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
+
+      {isSearchOpen && <SiteSearch onClose={closeSearch} />}
 
       {/* Spacer to prevent content from going under fixed header */}
       <div className="h-16" aria-hidden="true" />
