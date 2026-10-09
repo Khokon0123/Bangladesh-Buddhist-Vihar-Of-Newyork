@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getDict } from "@/lib/getLang";
 
 // Icon Components for Feature Cards
 const BookIcon = () => (
@@ -59,6 +60,7 @@ const PeopleIcon = () => (
 );
 
 export default function Home() {
+  const t = getDict().home;
   return (
     <main id="main-content" className="min-h-screen">
       {/* Full-Screen Hero Section */}
@@ -121,7 +123,7 @@ export default function Home() {
               textShadow: "0 2px 8px rgba(0,0,0,0.4)",
             }}
           >
-            Welcome to Peace
+            {t.heroTitle}
           </h1>
           <p
             style={{
@@ -133,7 +135,7 @@ export default function Home() {
               textShadow: "0 1px 4px rgba(0,0,0,0.3)",
             }}
           >
-            A sanctuary for wisdom, compassion, and inner transformation
+            {t.heroSubtitle}
           </p>
 
           {/* Inspirational Quote */}
@@ -149,10 +151,10 @@ export default function Home() {
             }}
           >
             <p style={{ fontStyle: "italic", lineHeight: 1.8, color: "#823C3C", fontSize: "1.25rem", marginBottom: 0 }}>
-              &ldquo;The mind is everything. What you think you become.&rdquo;
+              &ldquo;{t.heroQuote}&rdquo;
             </p>
             <footer style={{ marginTop: "1rem", color: "#823C3C", fontSize: "1rem" }}>
-              — Buddha
+              — {t.heroQuoteAuthor}
             </footer>
           </blockquote>
 
@@ -170,7 +172,7 @@ export default function Home() {
               textDecoration: "none",
             }}
           >
-            Begin Your Journey
+            {t.cta}
           </Link>
         </div>
 
@@ -205,11 +207,10 @@ export default function Home() {
           {/* Section Header */}
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-primary-dark mb-4">
-              Explore Our Path
+              {t.exploreTitle}
             </h2>
             <p className="text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto">
-              Discover teachings, practices, and community that guide you toward
-              inner peace and wisdom
+              {t.exploreSubtitle}
             </p>
           </div>
 
@@ -221,17 +222,16 @@ export default function Home() {
                 <BookIcon />
               </div>
               <h3 className="text-2xl font-semibold text-primary-dark mb-4">
-                Learn Buddhism
+                {t.learnTitle}
               </h3>
               <p className="text-neutral-600 mb-6 leading-relaxed">
-                Explore the profound teachings of the Buddha, understand the
-                Four Noble Truths, and discover the path to enlightenment.
+                {t.learnText}
               </p>
               <Link
                 href="/learn-buddhism"
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium group-hover:gap-3 gap-2 transition-all duration-300"
               >
-                Learn More
+                {t.learnMore}
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -251,17 +251,16 @@ export default function Home() {
                 <MeditationIcon />
               </div>
               <h3 className="text-2xl font-semibold text-primary-dark mb-4">
-                Practice Meditation
+                {t.meditateTitle}
               </h3>
               <p className="text-neutral-600 mb-6 leading-relaxed">
-                Cultivate mindfulness and inner peace through guided meditation
-                sessions and mindfulness practices for daily life.
+                {t.meditateText}
               </p>
               <Link
                 href="/practices/meditation"
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium group-hover:gap-3 gap-2 transition-all duration-300"
               >
-                Learn More
+                {t.learnMore}
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -281,17 +280,16 @@ export default function Home() {
                 <PeopleIcon />
               </div>
               <h3 className="text-2xl font-semibold text-primary-dark mb-4">
-                Meet the Venerables
+                {t.venerablesTitle}
               </h3>
               <p className="text-neutral-600 mb-6 leading-relaxed">
-                Connect with our respected teachers and learn from their wisdom,
-                experience, and compassionate guidance.
+                {t.venerablesText}
               </p>
               <Link
                 href="/venerable-introduction"
                 className="inline-flex items-center text-primary hover:text-primary-dark font-medium group-hover:gap-3 gap-2 transition-all duration-300"
               >
-                Learn More
+                {t.learnMore}
                 <svg
                   className="w-5 h-5"
                   fill="none"

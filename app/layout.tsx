@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Merriweather } from "next/font/google";
+import { Anek_Bangla, Merriweather } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ErrorBoundaryWrapper from "@/components/ErrorBoundary";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import { getLang } from "@/lib/getLang";
+import { dictionaries } from "@/lib/i18n";
 import "./globals.css";
 
-// Calm sans-serif font for body and headings
-// Optimized: preload and swap for better LCP and FOUT prevention
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap", // Prevents FOIT (Flash of Invisible Text), shows fallback immediately
-  variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700"],
-  preload: true, // Preload critical font for faster LCP
-  fallback: ["system-ui", "-apple-system", "sans-serif"], // Immediate fallback prevents layout shift
-  adjustFontFallback: true, // Automatically adjust fallback font metrics to reduce CLS
+// Main font for both English and Bangla text
+const anekBangla = Anek_Bangla({
+  subsets: ["bengali", "latin"],
+  display: "swap",
+  variable: "--font-anek-bangla",
+  preload: true,
+  fallback: ["system-ui", "-apple-system", "sans-serif"],
 });
 
 // Serif font for quotes and special text
@@ -31,7 +30,7 @@ const merriweather = Merriweather({
   adjustFontFallback: true, // Match fallback metrics to prevent CLS
 });
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: {
     default: "Bangladesh Buddhist Vihara Of New York | Peace, Wisdom, and Compassion",
     template: "%s | Bangladesh Buddhist Vihara Of New York",
@@ -107,13 +106,28 @@ export const metadata: Metadata = {
   },
 };
 
+// Tab title and description follow the visitor's language.
+export function generateMetadata(): Metadata {
+  if (getLang() !== "bn") return baseMetadata;
+  const title = "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্ক | শান্তি, প্রজ্ঞা ও করুণা";
+  const description = "শান্তি, প্রজ্ঞা ও করুণার এক আশ্রয়স্থল। বুদ্ধের শিক্ষা, ধ্যান অনুশীলন ও আধ্যাত্মিক দিকনির্দেশনা অন্বেষণ করুন।";
+  return {
+    ...baseMetadata,
+    title: { default: title, template: "%s | বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্ক" },
+    description,
+    openGraph: { ...baseMetadata.openGraph, locale: "bn_BD", title, description },
+    twitter: { ...baseMetadata.twitter, title, description },
+  };
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = getLang();
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* Preconnect to external domains for faster resource loading */}
@@ -125,12 +139,13 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.youtube.com" />
       </head>
       <body
-        className={`${inter.variable} ${merriweather.variable} font-sans antialiased flex flex-col min-h-screen`}
+        className={`${anekBangla.variable} ${merriweather.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
+        <LanguageProvider lang={lang}>
         <ErrorBoundaryWrapper>
           {/* Skip to main content link for accessibility */}
           <a href="#main-content" className="skip-to-main">
-            Skip to main content
+            {dictionaries[lang].skipToContent}
           </a>
           <Header />
           <div className="flex-1 w-full">
@@ -138,6 +153,7 @@ export default function RootLayout({
           </div>
           <Footer />
         </ErrorBoundaryWrapper>
+        </LanguageProvider>
       </body>
     </html>
   );

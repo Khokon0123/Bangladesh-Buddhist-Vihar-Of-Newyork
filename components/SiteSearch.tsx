@@ -5,32 +5,42 @@ import Link from "next/link";
 import { articles } from "@/app/blog/articles";
 import { books } from "@/app/book/books";
 import { events } from "@/lib/data/events";
+import { useLang } from "./LanguageProvider";
+import { dictionaries, loc, type Dict, type Lang, type WithBn } from "@/lib/i18n";
 
-type Entry = { title: string; text: string; href: string; kind: string };
+type Entry = { title: string; text: string; href: string; kind: keyof Dict["search"]["kinds"] };
 
-const pages: Entry[] = [
-  { title: "Home", text: "temple vihara welcome", href: "/", kind: "Page" },
-  { title: "Learn Buddhism", text: "dhamma teachings four noble truths eightfold path", href: "/learn-buddhism", kind: "Page" },
-  { title: "Venerable Introduction", text: "monks bhante venerables", href: "/venerable-introduction", kind: "Page" },
-  { title: "Blog", text: "articles posts", href: "/blog", kind: "Page" },
-  { title: "Events", text: "celebrations ceremonies calendar", href: "/events", kind: "Page" },
-  { title: "Book", text: "books sutras reading", href: "/book", kind: "Page" },
-  { title: "Resources", text: "downloads audio video links", href: "/resources", kind: "Page" },
-  { title: "Dhamma School", text: "children classes kids", href: "/practices/dhamma-school", kind: "Page" },
-  { title: "Meditation", text: "vipassana sitting practice", href: "/practices/meditation", kind: "Page" },
-  { title: "About", text: "contact address location donate", href: "/about", kind: "Page" },
+// Extra English keywords per page; Bangla visitors match on the Bangla page name plus these.
+const pages: { href: string; key: keyof Dict["nav"]; keywords: string }[] = [
+  { href: "/", key: "home", keywords: "temple vihara welcome বিহার" },
+  { href: "/learn-buddhism", key: "learnBuddhism", keywords: "dhamma teachings four noble truths eightfold path ধর্ম আর্যসত্য অষ্টাঙ্গিক মার্গ" },
+  { href: "/venerable-introduction", key: "venerables", keywords: "monks bhante venerables ভিক্ষু ভদন্ত" },
+  { href: "/blog", key: "blog", keywords: "articles posts প্রবন্ধ" },
+  { href: "/events", key: "events", keywords: "celebrations ceremonies calendar উৎসব পূর্ণিমা" },
+  { href: "/book", key: "book", keywords: "books sutras reading গ্রন্থাগার সূত্র" },
+  { href: "/resources", key: "resources", keywords: "downloads audio video links ডাউনলোড ভিডিও" },
+  { href: "/practices/dhamma-school", key: "dhammaSchool", keywords: "children classes kids শিশু ক্লাস পাঠ" },
+  { href: "/practices/meditation", key: "meditation", keywords: "vipassana sitting practice বিদর্শন" },
+  { href: "/about", key: "about", keywords: "contact address location donate যোগাযোগ ঠিকানা" },
 ];
 
 // ponytail: static index; events added through the admin (Redis) aren't included, fetch them if that matters
-const index: Entry[] = [
-  ...pages,
-  ...articles.map((a) => ({ title: a.title, text: `${a.excerpt} ${a.category} ${a.author}`, href: `/blog/${a.id}`, kind: "Blog" })),
-  ...books.map((b) => ({ title: b.title, text: `${b.description} ${b.category} ${b.author}`, href: `/book/${b.id}`, kind: "Book" })),
-  ...events.map((e) => ({ title: e.title, text: e.description, href: `/events/${e.slug}`, kind: "Event" })),
-];
+function buildIndex(lang: Lang): Entry[] {
+  // Title in the current language; search text covers both languages so either works.
+  const both = <T extends object>(item: WithBn<T>, fields: (keyof T)[]) =>
+    fields.map((f) => `${item[f] ?? ""} ${item.bn?.[f] ?? ""}`).join(" ");
+  return [
+    ...pages.map((p): Entry => ({ title: dictionaries[lang].nav[p.key], text: `${dictionaries.en.nav[p.key]} ${dictionaries.bn.nav[p.key]} ${p.keywords}`, href: p.href, kind: "page" })),
+    ...articles.map((a): Entry => ({ title: loc(a, lang).title, text: both(a, ["title", "excerpt", "category", "author"]), href: `/blog/${a.id}`, kind: "blog" })),
+    ...books.map((b): Entry => ({ title: loc(b, lang).title, text: both(b, ["title", "description", "category", "author"]), href: `/book/${b.id}`, kind: "book" })),
+    ...events.map((e): Entry => ({ title: loc(e, lang).title, text: both(e, ["title", "description"]), href: `/events/${e.slug}`, kind: "event" })),
+  ];
+}
 
 export default function SiteSearch({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
+  const { lang, t } = useLang();
+  const index = useMemo(() => buildIndex(lang), [lang]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -49,14 +59,14 @@ export default function SiteSearch({ onClose }: { onClose: () => void }) {
         return words.every((w) => hay.includes(w));
       })
       .slice(0, 12);
-  }, [query]);
+  }, [query, index]);
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/50 flex justify-center items-start pt-20 px-4" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Search the site"
+        aria-label={t.aria.searchSite}
         className="w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
@@ -65,13 +75,13 @@ export default function SiteSearch({ onClose }: { onClose: () => void }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search pages, articles, books, events…"
-          aria-label="Search"
+          placeholder={t.search.placeholder}
+          aria-label={t.aria.search}
           className="w-full px-5 py-4 text-base text-neutral-900 border-b border-neutral-200 outline-none"
         />
         {query && (
           <ul className="list-none m-0 p-0 py-2 space-y-0 max-h-[60vh] overflow-y-auto">
-            {results.length === 0 && <li className="px-5 py-3 text-sm text-neutral-500">No results for &ldquo;{query}&rdquo;</li>}
+            {results.length === 0 && <li className="px-5 py-3 text-sm text-neutral-500">{t.search.noResults} &ldquo;{query}&rdquo;</li>}
             {results.map((r) => (
               <li key={r.href} className="m-0">
                 <Link
@@ -79,7 +89,7 @@ export default function SiteSearch({ onClose }: { onClose: () => void }) {
                   onClick={onClose}
                   className="flex items-baseline gap-3 px-5 py-3 no-underline hover:no-underline hover:bg-neutral-100 text-neutral-900"
                 >
-                  <span className="shrink-0 w-12 text-xs uppercase tracking-wide text-neutral-500">{r.kind}</span>
+                  <span className="shrink-0 w-16 text-xs uppercase tracking-wide text-neutral-500">{t.search.kinds[r.kind]}</span>
                   <span>{r.title}</span>
                 </Link>
               </li>

@@ -3,7 +3,55 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { articles as allArticles, type ArticleCardProps } from "./articles";
+import { articles, type ArticleCardProps } from "./articles";
+import { useLang } from "@/components/LanguageProvider";
+import { loc } from "@/lib/i18n";
+
+const en = {
+  title: "Buddhist Wisdom & Insights",
+  subtitle: "Explore teachings, practices, and reflections from our community of practitioners and teachers",
+  categoriesLabel: "Article categories",
+  featured: "Featured Article",
+  none: "No articles found in this category.",
+  stay: "Stay Connected",
+  stayText: "Receive our latest articles and teachings directly in your inbox",
+  thanks: "🙏 Thank you for subscribing!",
+  thanksText: "You'll receive our latest teachings and articles in your inbox.",
+  emailPh: "Enter your email",
+  emailLabel: "Email address for newsletter subscription",
+  subscribeLabel: "Subscribe to newsletter",
+  subscribe: "Subscribe",
+  allArticles: "All Articles",
+  emailEmpty: "Please enter your email address.",
+  emailInvalid: "Please enter a valid email address.",
+  "": "",
+  cat: (c: string) => c,
+  catArticles: (c: string) => `${c} Articles`,
+  read: (r: string) => `${r} read`,
+};
+
+const bn: typeof en = {
+  title: "বৌদ্ধ প্রজ্ঞা ও অন্তর্দৃষ্টি",
+  subtitle: "আমাদের সাধক ও গুরুদের শিক্ষা, অনুশীলন ও ভাবনা অন্বেষণ করুন",
+  categoriesLabel: "প্রবন্ধের বিভাগ",
+  featured: "নির্বাচিত প্রবন্ধ",
+  none: "এই বিভাগে কোনো প্রবন্ধ পাওয়া যায়নি।",
+  stay: "যুক্ত থাকুন",
+  stayText: "আমাদের সর্বশেষ প্রবন্ধ ও শিক্ষা সরাসরি আপনার ইনবক্সে পান",
+  thanks: "🙏 সাবস্ক্রাইব করার জন্য ধন্যবাদ!",
+  thanksText: "আপনি আমাদের সর্বশেষ শিক্ষা ও প্রবন্ধ আপনার ইনবক্সে পাবেন।",
+  emailPh: "আপনার ইমেইল লিখুন",
+  emailLabel: "নিউজলেটার সাবস্ক্রিপশনের ইমেইল ঠিকানা",
+  subscribeLabel: "নিউজলেটারে সাবস্ক্রাইব করুন",
+  subscribe: "সাবস্ক্রাইব",
+  allArticles: "সকল প্রবন্ধ",
+  emailEmpty: "অনুগ্রহ করে আপনার ইমেইল ঠিকানা লিখুন।",
+  emailInvalid: "অনুগ্রহ করে একটি সঠিক ইমেইল ঠিকানা লিখুন।",
+  "": "",
+  cat: (c: string) => ({ Meditation: "ধ্যান", Teachings: "শিক্ষা", Practice: "অনুশীলন", Wellness: "সুস্থতা" } as Record<string, string>)[c] ?? c,
+  catArticles: (c: string) => `${c} বিষয়ক প্রবন্ধ`,
+  read: (r: string) => `পড়তে ${r}`,
+};
 
 // Category filter component
 interface CategoryFilterProps {
@@ -17,33 +65,35 @@ const CategoryFilter = ({
   activeCategory,
   onCategoryChange,
 }: CategoryFilterProps) => {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   return (
     <div className="flex flex-wrap items-center gap-3 mb-8">
       <button
         onClick={() => onCategoryChange("All")}
         aria-pressed={activeCategory === "All"}
-        aria-label="Show all articles"
+        aria-label={t.allArticles}
         className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
           activeCategory === "All"
             ? "bg-primary text-white shadow-soft"
             : "bg-white text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
         }`}
       >
-        All Articles
+        {t.allArticles}
       </button>
       {categories.map((category) => (
         <button
           key={category}
           onClick={() => onCategoryChange(category)}
           aria-pressed={activeCategory === category}
-          aria-label={`Filter articles by ${category} category`}
+          aria-label={t.cat(category)}
           className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
             activeCategory === category
               ? "bg-primary text-white shadow-soft"
               : "bg-white text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
           }`}
         >
-          {category}
+          {t.cat(category)}
         </button>
       ))}
     </div>
@@ -63,6 +113,8 @@ const ArticleCard = ({
   imageUrl,
   featured = false,
 }: ArticleCardProps) => {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   if (featured) {
     return (
       <article>
@@ -74,7 +126,7 @@ const ArticleCard = ({
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt={`Featured article: ${title} - ${excerpt.substring(0, 100)}`}
+              alt={title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
@@ -84,14 +136,14 @@ const ArticleCard = ({
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center" role="img" aria-label={`Placeholder image for article: ${title}`}>
+            <div className="w-full h-full flex items-center justify-center" role="img" aria-label={title}>
               <span className="text-6xl text-neutral-300" aria-hidden="true">📿</span>
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
             <span className="inline-block px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-medium mb-3">
-              {category}
+              {t.cat(category)}
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-3 leading-tight group-hover:underline">
               {title}
@@ -102,7 +154,7 @@ const ArticleCard = ({
               <span>•</span>
               <span>{date}</span>
               <span>•</span>
-              <span>{readTime} read</span>
+              <span>{t.read(readTime)}</span>
             </div>
           </div>
         </div>
@@ -121,7 +173,7 @@ const ArticleCard = ({
         {imageUrl ? (
             <Image
               src={imageUrl}
-              alt={`Article: ${title} in ${category} category`}
+              alt={title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -137,7 +189,7 @@ const ArticleCard = ({
         )}
         <div className="absolute top-4 left-4">
           <span className="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-primary-dark">
-            {category}
+            {t.cat(category)}
           </span>
         </div>
       </div>
@@ -162,18 +214,21 @@ const ArticleCard = ({
 };
 
 export default function BlogPage() {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   const [activeCategory, setActiveCategory] = useState("All");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [emailError, setEmailError] = useState("");
+  const [emailError, setEmailError] = useState<"" | "emailEmpty" | "emailInvalid">("");
+  const allArticles = articles.map((a) => loc(a, lang));
 
   const handleSubscribe = () => {
     if (!email) {
-      setEmailError("Please enter your email address.");
+      setEmailError("emailEmpty");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError("Please enter a valid email address.");
+      setEmailError("emailInvalid");
       return;
     }
     setEmailError("");
@@ -211,18 +266,17 @@ export default function BlogPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ position: "relative", zIndex: 2 }}>
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-white mb-6">
-              Buddhist Wisdom & Insights
+              {t.title}
             </h1>
             <p className="text-xl sm:text-2xl text-white/95 leading-relaxed">
-              Explore teachings, practices, and reflections from our community
-              of practitioners and teachers
+              {t.subtitle}
             </p>
           </div>
         </div>
       </section>
 
       {/* Category Filters */}
-      <nav aria-label="Article categories" className="py-8 bg-white border-b border-neutral-200 sticky top-20 z-40 backdrop-blur-sm bg-white/95">
+      <nav aria-label={t.categoriesLabel} className="py-8 bg-white border-b border-neutral-200 sticky top-20 z-40 backdrop-blur-sm bg-white/95">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <CategoryFilter
             categories={categories}
@@ -238,7 +292,7 @@ export default function BlogPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto mb-4">
               <h2 id="featured-article-heading" className="text-sm uppercase tracking-wider text-neutral-500 font-semibold mb-2">
-                Featured Article
+                {t.featured}
               </h2>
             </div>
             <div className="max-w-5xl mx-auto">
@@ -255,7 +309,7 @@ export default function BlogPage() {
             <>
               <div className="max-w-7xl mx-auto mb-8">
                 <h2 id="articles-heading" className="text-2xl sm:text-3xl font-semibold text-primary-dark">
-                  {activeCategory === "All" ? "All Articles" : `${activeCategory} Articles`}
+                  {activeCategory === "All" ? t.allArticles : t.catArticles(t.cat(activeCategory))}
                 </h2>
               </div>
               <div className="max-w-7xl mx-auto">
@@ -269,7 +323,7 @@ export default function BlogPage() {
           ) : (
             <div className="max-w-2xl mx-auto text-center py-16">
               <p className="text-lg text-neutral-600" role="status" aria-live="polite">
-                No articles found in this category.
+                {t.none}
               </p>
             </div>
           )}
@@ -281,18 +335,18 @@ export default function BlogPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-semibold text-primary-dark mb-4">
-              Stay Connected
+              {t.stay}
             </h2>
             <p className="text-lg text-neutral-600 mb-8">
-              Receive our latest articles and teachings directly in your inbox
+              {t.stayText}
             </p>
             {subscribed ? (
               <div className="max-w-md mx-auto px-6 py-4 rounded-lg border border-primary/30 bg-primary/5">
                 <p className="text-primary-dark font-medium text-lg">
-                  🙏 Thank you for subscribing!
+                  {t.thanks}
                 </p>
                 <p className="text-neutral-600 text-sm mt-1">
-                  You'll receive our latest teachings and articles in your inbox.
+                  {t.thanksText}
                 </p>
               </div>
             ) : (
@@ -303,21 +357,21 @@ export default function BlogPage() {
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                     onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                    placeholder="Enter your email"
-                    aria-label="Email address for newsletter subscription"
+                    placeholder={t.emailPh}
+                    aria-label={t.emailLabel}
                     className="flex-1 px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                   <button
                     type="button"
                     onClick={handleSubscribe}
-                    aria-label="Subscribe to newsletter"
+                    aria-label={t.subscribeLabel}
                     className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   >
-                    Subscribe
+                    {t.subscribe}
                   </button>
                 </div>
                 {emailError && (
-                  <p className="text-red-600 text-sm mt-2 text-left">{emailError}</p>
+                  <p className="text-red-600 text-sm mt-2 text-left">{t[emailError]}</p>
                 )}
               </div>
             )}

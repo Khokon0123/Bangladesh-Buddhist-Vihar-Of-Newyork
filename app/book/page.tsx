@@ -1,5 +1,27 @@
 import Link from "next/link";
-import { books, type BookCardProps } from "./books";
+import { getLang } from "@/lib/getLang";
+import { books, bookCategoryBn, type BookCardProps } from "./books";
+import { loc } from "@/lib/i18n";
+
+const en = {
+  isNew: "New",
+  title: "Digital Library",
+  subtitle: "Explore our collection of Buddhist texts, teachings, and meditation guides",
+  intro: "Our digital library contains carefully selected Buddhist texts, from ancient sutras to modern interpretations. Each book offers wisdom and guidance for your spiritual journey.",
+  quote: "Books are the quietest and most constant of friends; they are the most accessible and wisest of counselors, and the most patient of teachers.",
+  quoteBy: "— Charles W. Eliot",
+
+};
+
+const bn: typeof en = {
+  isNew: "নতুন",
+  title: "ডিজিটাল গ্রন্থাগার",
+  subtitle: "আমাদের বৌদ্ধ গ্রন্থ, শিক্ষা ও ধ্যান নির্দেশিকার সংগ্রহ অন্বেষণ করুন",
+  intro: "আমাদের ডিজিটাল গ্রন্থাগারে রয়েছে প্রাচীন সূত্র থেকে আধুনিক ব্যাখ্যা পর্যন্ত যত্নসহকারে নির্বাচিত বৌদ্ধ গ্রন্থ। প্রতিটি বই আপনার আধ্যাত্মিক যাত্রার জন্য প্রজ্ঞা ও দিকনির্দেশনা দেয়।",
+  quote: "বই হলো সবচেয়ে নীরব ও সবচেয়ে বিশ্বস্ত বন্ধু; সবচেয়ে সহজলভ্য ও প্রাজ্ঞ পরামর্শদাতা, এবং সবচেয়ে ধৈর্যশীল শিক্ষক।",
+  quoteBy: "— চার্লস ডব্লিউ. এলিয়ট",
+
+};
 
 const categoryColors: Record<string, { bg: string; text: string; accent: string }> = {
   Sutras: { bg: "#3d1f1f", text: "#f5c21a", accent: "#c9a227" },
@@ -22,6 +44,9 @@ const BookCard = ({
   isNew = false,
 }: BookCardProps) => {
   const colors = categoryColors[category] || categoryColors["Teachings"];
+  const lang = getLang();
+  const t = lang === "bn" ? bn : en;
+  const categoryLabel = lang === "bn" ? bookCategoryBn[category] ?? category : category;
 
   return (
     <Link
@@ -37,7 +62,7 @@ const BookCard = ({
           {/* Styled placeholder — always visible underneath */}
           <div className="absolute inset-0 flex flex-col justify-between p-4">
             <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: colors.accent }}>
-              {category}
+              {categoryLabel}
             </div>
             <div className="flex-1 flex items-center justify-center py-3">
               <svg viewBox="0 0 40 40" className="w-10 h-10 opacity-25" fill={colors.text} aria-hidden="true">
@@ -69,7 +94,7 @@ const BookCard = ({
           {/* New Badge */}
           {isNew && (
             <div className="absolute top-3 right-3 bg-gold-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md z-10">
-              New
+              {t.isNew}
             </div>
           )}
 
@@ -80,7 +105,7 @@ const BookCard = ({
         {/* Book Info */}
         <div className="space-y-2">
           <div>
-            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">{category}</p>
+            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">{categoryLabel}</p>
             <h3 className="text-lg font-semibold text-primary-dark group-hover:text-primary transition-colors duration-300 line-clamp-2 leading-tight">
               {title}
             </h3>
@@ -94,6 +119,8 @@ const BookCard = ({
 };
 
 export default function BookPage() {
+  const lang = getLang();
+  const t = lang === "bn" ? bn : en;
   return (
     <main id="main-content" className="min-h-screen bg-neutral-50">
       {/* Hero Section */}
@@ -111,10 +138,10 @@ export default function BookPage() {
               <BookIcon className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-white mb-6">
-              Digital Library
+              {t.title}
             </h1>
             <p className="text-xl sm:text-2xl text-white/95 leading-relaxed">
-              Explore our collection of Buddhist texts, teachings, and meditation guides
+              {t.subtitle}
             </p>
           </div>
         </div>
@@ -125,8 +152,7 @@ export default function BookPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-lg text-neutral-600 leading-relaxed">
-              Our digital library contains carefully selected Buddhist texts, from ancient sutras to
-              modern interpretations. Each book offers wisdom and guidance for your spiritual journey.
+              {t.intro}
             </p>
           </div>
         </div>
@@ -137,7 +163,7 @@ export default function BookPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
-              {books.map((book) => (
+              {books.map((b) => loc(b, lang)).map((book) => (
                 <BookCard key={book.id} {...book} />
               ))}
             </div>
@@ -150,9 +176,8 @@ export default function BookPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <blockquote className="font-quote text-quote-lg text-neutral-600 italic leading-relaxed border-l-4 border-gold-500 pl-6 py-2">
-              &ldquo;Books are the quietest and most constant of friends; they are the most
-              accessible and wisest of counselors, and the most patient of teachers.&rdquo;
-              <footer className="mt-4 text-sm text-neutral-500 not-italic">— Charles W. Eliot</footer>
+              &ldquo;{t.quote}&rdquo;
+              <footer className="mt-4 text-sm text-neutral-500 not-italic">{t.quoteBy}</footer>
             </blockquote>
           </div>
         </div>

@@ -1,9 +1,38 @@
 "use client";
 
+import { useLang } from "@/components/LanguageProvider";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { loc, num, type WithBn } from "@/lib/i18n";
+import { bookCategoryBn } from "../books";
+
+const en = {
+  back: "Back to Library",
+  isNew: "New",
+  pages: "Pages:",
+  language: "Language:",
+  about: "About This Book",
+  download: "Download PDF",
+  readOnline: "Read Online",
+  by: (title: string, author: string) => `${title} by ${author}`,
+  byLine: (author: string) => `by ${author}`,
+  translated: (name: string) => `Translated by ${name}`,
+};
+
+const bn: typeof en = {
+  back: "গ্রন্থাগারে ফিরে যান",
+  isNew: "নতুন",
+  pages: "পৃষ্ঠা:",
+  language: "ভাষা:",
+  about: "বইটি সম্পর্কে",
+  download: "পিডিএফ ডাউনলোড করুন",
+  readOnline: "অনলাইনে পড়ুন",
+  by: (title: string, author: string) => `${title} — ${author}`,
+  byLine: (author: string) => `লেখক: ${author}`,
+  translated: (name: string) => `অনুবাদ: ${name}`,
+};
 
 // Book cover placeholder
 const BookCoverPlaceholder = ({ title }: { title: string }) => (
@@ -35,7 +64,7 @@ interface BookDetail {
 }
 
 // Sample book data - in a real app, this would come from a CMS or database
-const booksData: Record<string, BookDetail> = {
+const booksData: Record<string, WithBn<BookDetail>> = {
   dhammapada: {
     id: "dhammapada",
     title: "The Dhammapada",
@@ -50,6 +79,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-14-044558-9",
+    bn: { title: "ধম্মপদ", author: "বুদ্ধ", translator: "বিভিন্ন অনুবাদক", longDescription: "ধম্মপদ গাথা আকারে বুদ্ধের বাণীর একটি সংকলন এবং সর্বাধিক পঠিত ও সুপরিচিত বৌদ্ধ ধর্মগ্রন্থগুলোর একটি। ধম্মপদের মূল সংস্করণটি রয়েছে থেরবাদ বৌদ্ধধর্মের পালি ত্রিপিটকের খুদ্দক নিকায়ে। বৌদ্ধ পণ্ডিত ও অট্ঠকথাকার বুদ্ধঘোষ ব্যাখ্যা করেছেন যে, এই সংকলনের প্রতিটি বাণী বুদ্ধ ও তাঁর ভিক্ষুসংঘের জীবনে উদ্ভূত ভিন্ন ভিন্ন পরিস্থিতির প্রেক্ষিতে ভিন্ন ভিন্ন সময়ে উচ্চারিত হয়েছিল।", language: "ইংরেজি" },
   },
   "heart-sutra": {
     id: "heart-sutra",
@@ -65,6 +95,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isNew: true,
+    bn: { title: "প্রজ্ঞাপারমিতা হৃদয় সূত্র", author: "বুদ্ধ", translator: "থিক নাত হান", longDescription: "হৃদয় সূত্র মহাযান বৌদ্ধধর্মের সবচেয়ে জনপ্রিয় সূত্র। বলা হয়, এতে প্রজ্ঞাপারমিতা শিক্ষার সারমর্ম নিহিত। সূত্রটি শূন্যতার প্রকৃতি এবং কীভাবে সকল বিষয় স্বভাবগত অস্তিত্বশূন্য, তা ব্যাখ্যা করে। এই উপলব্ধি মহাযান বোধিমার্গের কেন্দ্রবিন্দু। থিক নাত হানের অনুবাদ ও ব্যাখ্যা এই গভীর গ্রন্থটিকে আধুনিক পাঠকের কাছে সহজবোধ্য করে তুলেছে।", language: "ইংরেজি" },
   },
   "mindfulness-in-plain-english": {
     id: "mindfulness-in-plain-english",
@@ -79,6 +110,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-86171-321-9",
+    bn: { title: "সহজ ভাষায় সচেতনতা (Mindfulness in Plain English)", author: "ভান্তে হেনেপোলা গুণরত্ন", longDescription: "এই বইটি ধ্যানের একটি ব্যবহারিক নির্দেশিকা, যা দৈনন্দিন জীবনে সচেতনতা ও মনোযোগ গড়ে তোলার উপায় ব্যাখ্যা করে। স্পষ্ট ও সহজবোধ্য ভাষায় লেখা বইটিতে ধ্যান অনুশীলন শুরু করার ধাপে ধাপে নির্দেশনা রয়েছে। লেখক একজন থেরবাদী বৌদ্ধ ভিক্ষু, যিনি কয়েক দশকের শিক্ষাদানের অভিজ্ঞতা থেকে ব্যবহারিক পরামর্শ দিয়েছেন এবং ধ্যান অনুশীলন নিয়ে সাধারণ প্রশ্নের উত্তর দিয়েছেন।", language: "ইংরেজি" },
   },
   "art-of-happiness": {
     id: "art-of-happiness",
@@ -94,6 +126,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     externalUrl: "https://example.com",
     isbn: "978-1-57322-111-5",
+    bn: { title: "সুখের শিল্প (The Art of Happiness)", author: "দালাই লামা", translator: "হাওয়ার্ড কাটলার", longDescription: "এই বইয়ে দালাই লামা ও মনোরোগ বিশেষজ্ঞ হাওয়ার্ড কাটলার সুখের প্রকৃতি এবং তা অর্জনের উপায় অন্বেষণ করেছেন। বৌদ্ধ দর্শন ও আধুনিক মনোবিজ্ঞানের আলোকে তাঁরা সুখের উৎস, দুঃখ মোকাবিলা এবং করুণা চর্চার মতো বিষয় নিয়ে আলোচনা করেছেন। বইটি দৈনন্দিন জীবনে সুখ খুঁজে পাওয়ার ব্যবহারিক পরামর্শ দেয়।", language: "ইংরেজি" },
   },
   "zen-mind-beginners-mind": {
     id: "zen-mind-beginners-mind",
@@ -108,6 +141,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-8348-0079-3",
+    bn: { title: "জেন মন, নবীনের মন (Zen Mind, Beginner's Mind)", author: "শুনরিউ সুজুকি", longDescription: "এই বইটি জেন ধ্যান ও সাধনা নিয়ে ঘরোয়া আলোচনার সংকলন। সুজুকি রোশি নবীনের মন—অর্থাৎ উন্মুক্ততা, আগ্রহ ও পূর্বধারণাহীন মনোভাব—বজায় রাখার গুরুত্বের ওপর জোর দিয়েছেন। বইটিতে আসন, শ্বাস-প্রশ্বাস ও সাধনার প্রকৃতির মতো বিষয় রয়েছে, যা নবীন ও অভিজ্ঞ উভয় সাধকের জন্যই মূল্যবান।", language: "ইংরেজি" },
   },
   "what-the-buddha-taught": {
     id: "what-the-buddha-taught",
@@ -123,6 +157,7 @@ const booksData: Record<string, BookDetail> = {
     downloadUrl: "#",
     isNew: true,
     isbn: "978-0-8021-3031-0",
+    bn: { title: "বুদ্ধ কী শিখিয়েছিলেন (What the Buddha Taught)", author: "ওয়ালপোলা রাহুল", longDescription: "এই বইটি বৌদ্ধ মতবাদের মৌলিক নীতিগুলোর একটি পূর্ণাঙ্গ পরিচিতি দেয়। একজন থেরবাদী বৌদ্ধ ভিক্ষু ও পণ্ডিতের লেখা এই বইয়ে চার আর্যসত্য, আর্য অষ্টাঙ্গিক মার্গ এবং বাস্তবতার প্রকৃতির মতো মূল ধারণাগুলো ব্যাখ্যা করা হয়েছে। স্পষ্ট ও সহজবোধ্য ভাষায় লেখা বইটি নবীন এবং বৌদ্ধধর্ম সম্পর্কে কিছুটা জানেন এমন পাঠক—উভয়ের জন্যই উপযোগী।", language: "ইংরেজি" },
   },
   "peace-is-every-step": {
     id: "peace-is-every-step",
@@ -137,6 +172,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-553-35139-4",
+    bn: { title: "প্রতিটি পদক্ষেপে শান্তি (Peace Is Every Step)", author: "থিক নাত হান", longDescription: "এই বইটি দেখায় কীভাবে দৈনন্দিন জীবনে সচেতনতা প্রয়োগ করা যায়। থিক নাত হান ব্যাখ্যা করেছেন কীভাবে সচেতন শ্বাস, হাঁটা ও আহারের মতো সহজ অনুশীলনের মাধ্যমে কষ্টকে রূপান্তরিত করে প্রতিটি মুহূর্তে শান্তি পাওয়া যায়। বইটি আরও সচেতনতা ও করুণা নিয়ে বাঁচার ব্যবহারিক নির্দেশনা দেয়।", language: "ইংরেজি" },
   },
   "buddhist-psychology": {
     id: "buddhist-psychology",
@@ -150,6 +186,7 @@ const booksData: Record<string, BookDetail> = {
     pages: 192,
     language: "English",
     downloadUrl: "#",
+    bn: { title: "বৌদ্ধ মনোবিজ্ঞান (Buddhist Psychology)", author: "গেশে তাশি সেরিং", longDescription: "এই বইটি বৌদ্ধ মনোবিজ্ঞান এবং তা কীভাবে মনকে বুঝতে ও দুঃখ অতিক্রম করতে সাহায্য করে, তা অন্বেষণ করে। লেখক একজন তিব্বতি বৌদ্ধ গুরু, যিনি চেতনার প্রকৃতি, পঞ্চস্কন্ধ এবং মন ও দেহের সম্পর্কের মতো মূল ধারণাগুলো ব্যাখ্যা করেছেন। বইটির অন্তর্দৃষ্টি বৌদ্ধ সাধনা ও আধুনিক মনোবিজ্ঞান—উভয়ের জন্যই প্রাসঙ্গিক।", language: "ইংরেজি" },
   },
   "lotus-sutra": {
     id: "lotus-sutra",
@@ -165,6 +202,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-231-08161-9",
+    bn: { title: "সদ্ধর্মপুণ্ডরীক সূত্র (লোটাস সূত্র)", author: "বুদ্ধ", translator: "বার্টন ওয়াটসন", longDescription: "সদ্ধর্মপুণ্ডরীক সূত্র সবচেয়ে গুরুত্বপূর্ণ ও প্রভাবশালী মহাযান সূত্রগুলোর একটি। এটি শিক্ষা দেয় যে সকল প্রাণীর বুদ্ধ হওয়ার সম্ভাবনা রয়েছে এবং শিক্ষাদানে উপায়-কৌশলের গুরুত্বের ওপর জোর দেয়। সূত্রটিতে বৌদ্ধধর্মের মূল ধারণা ব্যাখ্যাকারী অনেক উপমা ও কাহিনি রয়েছে। বার্টন ওয়াটসনের অনুবাদ সেরা ইংরেজি অনুবাদগুলোর একটি হিসেবে ব্যাপকভাবে স্বীকৃত।", language: "ইংরেজি" },
   },
   "meditation-for-beginners": {
     id: "meditation-for-beginners",
@@ -180,6 +218,7 @@ const booksData: Record<string, BookDetail> = {
     downloadUrl: "#",
     isNew: true,
     isbn: "978-1-59179-942-6",
+    bn: { title: "নবীনদের জন্য ধ্যান (Meditation for Beginners)", author: "জ্যাক কর্নফিল্ড", longDescription: "এই বইটি ধ্যান অনুশীলন শুরু করার একটি ব্যবহারিক নির্দেশিকা। প্রখ্যাত ধ্যানগুরু জ্যাক কর্নফিল্ড নবীনদের জন্য সহজ কৌশল ও সহায়ক পরামর্শ দিয়েছেন। বইটিতে আসন, শ্বাস-প্রশ্বাস, মনোযোগ-বিক্ষেপ সামলানো এবং নিয়মিত অনুশীলন গড়ে তোলার মতো বিষয় রয়েছে, সাথে আছে নির্দেশিত ধ্যান ও ব্যবহারিক অনুশীলন।", language: "ইংরেজি" },
   },
   "awakening-the-buddha-within": {
     id: "awakening-the-buddha-within",
@@ -194,6 +233,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-0-7679-0157-7",
+    bn: { title: "অন্তরের বুদ্ধকে জাগানো (Awakening the Buddha Within)", author: "লামা সূর্য দাস", longDescription: "এই বইটি পশ্চিমা পাঠকদের জন্য তিব্বতি বৌদ্ধ সাধনার একটি নির্দেশিকা। লামা সূর্য দাস স্পষ্ট ও সহজবোধ্য ভাষায় মূল ধারণা ও অনুশীলন ব্যাখ্যা করে প্রাচীন প্রজ্ঞাকে আধুনিক জীবনের কাছে সহজলভ্য করেছেন। বইটিতে ধ্যান, করুণা ও বোধিমার্গের মতো বিষয় রয়েছে এবং দৈনন্দিন জীবনে বৌদ্ধ সাধনা যুক্ত করার ব্যবহারিক নির্দেশনা দেওয়া হয়েছে।", language: "ইংরেজি" },
   },
   "diamond-sutra": {
     id: "diamond-sutra",
@@ -209,6 +249,7 @@ const booksData: Record<string, BookDetail> = {
     language: "English",
     downloadUrl: "#",
     isbn: "978-1-58243-256-9",
+    bn: { title: "বজ্রচ্ছেদিকা প্রজ্ঞাপারমিতা সূত্র (হীরক সূত্র)", author: "বুদ্ধ", translator: "রেড পাইন", longDescription: "হীরক সূত্র প্রজ্ঞাপারমিতা বিষয়ক একটি প্রধান মহাযান সূত্র। এটি সকল বিষয়ের শূন্যতা এবং অনাসক্তির গুরুত্বের ওপর জোর দেয়। প্রচলিত ধারণাকে চ্যালেঞ্জ করা আপাতবিরোধী উক্তির জন্য সূত্রটি সুপরিচিত। রেড পাইনের অনুবাদে রয়েছে বিস্তৃত ব্যাখ্যা, যা পাঠককে এই গভীর গ্রন্থটি বুঝতে সাহায্য করে।", language: "ইংরেজি" },
   },
 };
 
@@ -217,8 +258,11 @@ export default function BookDetailPage({
 }: {
   params: { id: string };
 }) {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   const router = useRouter();
-  const book = booksData[params.id];
+  const raw = booksData[params.id];
+  const book = raw && loc(raw, lang);
 
   useEffect(() => {
     if (!book) {
@@ -249,7 +293,7 @@ export default function BookDetailPage({
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to Library
+            {t.back}
           </Link>
 
           <div className="max-w-5xl mx-auto">
@@ -260,7 +304,7 @@ export default function BookDetailPage({
                   {book.coverUrl ? (
                     <Image
                       src={book.coverUrl}
-                      alt={`${book.title} by ${book.author}`}
+                      alt={t.by(book.title, book.author)}
                       fill
                       className="object-cover"
                       sizes="(max-width: 640px) 100vw, 320px"
@@ -274,7 +318,7 @@ export default function BookDetailPage({
                   )}
                   {book.isNew && (
                     <div className="absolute top-4 right-4 bg-gold-500 text-white text-sm font-semibold px-3 py-1.5 rounded-full shadow-lg">
-                      New
+                      {t.isNew}
                     </div>
                   )}
                 </div>
@@ -284,18 +328,18 @@ export default function BookDetailPage({
               <div className="flex-1 text-white">
                 <div className="mb-4">
                   <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
-                    {book.category}
+                    {lang === "bn" ? bookCategoryBn[book.category] ?? book.category : book.category}
                   </span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-4 leading-tight">
                   {book.title}
                 </h1>
                 <p className="text-xl sm:text-2xl text-white/90 mb-6">
-                  by {book.author}
+                  {t.byLine(book.author)}
                 </p>
                 {book.translator && (
                   <p className="text-lg text-white/80 mb-6">
-                    Translated by {book.translator}
+                    {t.translated(book.translator)}
                   </p>
                 )}
 
@@ -303,12 +347,12 @@ export default function BookDetailPage({
                 <div className="space-y-3 pt-6 border-t border-white/20">
                   {book.pages && (
                     <div className="flex items-center gap-2 text-white/90">
-                      <span className="text-sm">Pages:</span>
-                      <span className="font-medium">{book.pages}</span>
+                      <span className="text-sm">{t.pages}</span>
+                      <span className="font-medium">{num(book.pages, lang)}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2 text-white/90">
-                    <span className="text-sm">Language:</span>
+                    <span className="text-sm">{t.language}</span>
                     <span className="font-medium">{book.language}</span>
                   </div>
                   {book.isbn && (
@@ -332,7 +376,7 @@ export default function BookDetailPage({
               {/* Description */}
               <div className="mb-10">
                 <h2 className="text-2xl sm:text-3xl font-semibold text-primary-dark mb-6">
-                  About This Book
+                  {t.about}
                 </h2>
                 <p className="text-neutral-700 leading-relaxed text-lg">
                   {book.longDescription}
@@ -360,7 +404,7 @@ export default function BookDetailPage({
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                       </svg>
-                      Download PDF
+                      {t.download}
                     </a>
                   )}
                   {book.externalUrl && (
@@ -370,7 +414,7 @@ export default function BookDetailPage({
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-primary border-2 border-primary rounded-xl font-medium hover:bg-primary/5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                     >
-                      <span>Read Online</span>
+                      <span>{t.readOnline}</span>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -405,7 +449,7 @@ export default function BookDetailPage({
                 >
                   <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
-                Back to Library
+                {t.back}
               </Link>
             </div>
           </div>

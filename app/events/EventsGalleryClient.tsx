@@ -3,6 +3,28 @@
 import { useState } from "react";
 import Link from "next/link";
 import { TempleEvent } from "@/lib/types/content";
+import { useLang } from "@/components/LanguageProvider";
+import { loc, num, type Lang } from "@/lib/i18n";
+
+const en = {
+  title: "Temple Events Gallery",
+  subtitle: "A living record of our community&apos;s sacred celebrations, teachings, and gatherings — year by year.",
+  filterLabel: "Filter events by year",
+  year: "Year:",
+  details: "View Details",
+  noEvents: (y: string) => `No events recorded for ${y}.`,
+  count: (n: string, count: number, y: string) => `${n} event${count !== 1 ? "s" : ""} in ${y}`,
+};
+
+const bn: typeof en = {
+  title: "বিহারের অনুষ্ঠান গ্যালারি",
+  subtitle: "বছরে বছরে আমাদের সংঘের পবিত্র উৎসব, ধর্মদেশনা ও সমাবেশের এক জীবন্ত দলিল।",
+  filterLabel: "বছর অনুযায়ী অনুষ্ঠান দেখুন",
+  year: "বছর:",
+  details: "বিস্তারিত দেখুন",
+  noEvents: (y: string) => `${y} সালে কোনো অনুষ্ঠান নথিভুক্ত নেই।`,
+  count: (n: string, _count: number, y: string) => `${y} সালে ${n}টি অনুষ্ঠান`,
+};
 
 interface Props {
   years: number[];
@@ -29,9 +51,9 @@ const CalendarIcon = () => (
 );
 
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string, lang: Lang): string {
   const date = new Date(dateStr + "T00:00:00");
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(lang === "bn" ? "bn-BD" : "en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -49,6 +71,8 @@ export default function EventsGalleryClient({
   initialYear,
   allEvents,
 }: Props) {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   const [selectedYear, setSelectedYear] = useState(initialYear);
   const [events, setEvents] = useState<TempleEvent[]>(() =>
     filterAndSort(allEvents, initialYear)
@@ -82,11 +106,10 @@ export default function EventsGalleryClient({
             <CalendarIcon />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Temple Events Gallery
+            {t.title}
           </h1>
           <p className="text-lg text-white/85 max-w-2xl mx-auto">
-            A living record of our community&apos;s sacred celebrations,
-            teachings, and gatherings — year by year.
+            {t.subtitle}
           </p>
         </div>
       </section>
@@ -94,12 +117,12 @@ export default function EventsGalleryClient({
       {/* Year Filter Tabs */}
       <nav
         className="sticky top-20 z-40 bg-white/95 backdrop-blur-sm border-b border-neutral-200"
-        aria-label="Filter events by year"
+        aria-label={t.filterLabel}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-wrap gap-3 items-center">
             <span className="text-sm font-medium text-neutral-500 mr-1">
-              Year:
+              {t.year}
             </span>
             {years.map((year) => (
               <button
@@ -115,7 +138,7 @@ export default function EventsGalleryClient({
                   }
                 `}
               >
-                {year}
+                {num(year, lang)}
               </button>
             ))}
           </div>
@@ -126,16 +149,15 @@ export default function EventsGalleryClient({
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {events.length === 0 ? (
           <div className="text-center py-20 text-neutral-500">
-            No events recorded for {selectedYear}.
+            {t.noEvents(num(selectedYear, lang))}
           </div>
         ) : (
           <>
             <p className="text-sm text-neutral-500 mb-8">
-              {events.length} event{events.length !== 1 ? "s" : ""} in{" "}
-              {selectedYear}
+              {t.count(num(events.length, lang), events.length, num(selectedYear, lang))}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {events.map((event) => (
+              {events.map((e) => loc(e, lang)).map((event) => (
                 <Link
                   key={event.id}
                   href={`/events/${event.slug}`}
@@ -164,7 +186,7 @@ export default function EventsGalleryClient({
                           {event.title}
                         </h2>
                         <span className="flex-shrink-0 text-xs font-medium text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-full">
-                          {formatDate(event.date)}
+                          {formatDate(event.date, lang)}
                         </span>
                       </div>
 
@@ -173,7 +195,7 @@ export default function EventsGalleryClient({
                       </p>
 
                       <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary group-hover:text-primary-dark transition-colors duration-200">
-                        View Details
+                        {t.details}
                         <svg
                           viewBox="0 0 24 24"
                           fill="none"

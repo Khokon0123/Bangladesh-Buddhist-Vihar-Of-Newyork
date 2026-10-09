@@ -4,8 +4,9 @@
  */
 
 import { Venerable } from "@/lib/types/content";
+import type { WithBn } from "@/lib/i18n";
 
-export const venerables: Venerable[] = [
+export const venerables: WithBn<Venerable>[] = [
   {
     id: "venerable-mudita-ratna-bhikkhu",
     slug: "venerable-mudita-ratna-bhikkhu",
@@ -17,6 +18,7 @@ export const venerables: Venerable[] = [
     imageUrl: "/images/venerables/mudita-ratna-bhikkhu.jpg",
     order: 1,
     specialties: ["Meditation", "Chan Buddhism", "Mindfulness"],
+    bn: { name: "ভদন্ত মুদিতা রত্ন ভিক্ষু", title: "বিহারাধ্যক্ষ", lineage: "চান (জেন) বৌদ্ধধর্ম, লিনজি ধারা", teachingFocus: "ধ্যান অনুশীলন, দৈনন্দিন জীবনে সচেতনতা এবং প্রজ্ঞা ও করুণার সমন্বয়", bio: "ভদন্ত মুদিতা রত্ন ভিক্ষু ২০ বছরেরও বেশি সময় ধরে বৌদ্ধধর্ম চর্চা করছেন। তিনি গত ২৫ বছর ধরে বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে ধ্যান ও বৌদ্ধ দর্শন শিক্ষা দিয়ে আসছেন। তাঁর শিক্ষায় সাধনা ও দৈনন্দিন জীবনের সমন্বয়ের ওপর জোর দেওয়া হয়, যা শিক্ষার্থীদের প্রতিটি মুহূর্তে প্রজ্ঞা ও করুণা খুঁজে পেতে সাহায্য করে।" },
   },
   {
     id: "venerable-monindra-bangsha-bhikkhu",
@@ -29,6 +31,7 @@ export const venerables: Venerable[] = [
     imageUrl: "/images/venerables/PHOTO-2026-04-25-15-18-06.jpg",
     order: 2,
     specialties: ["Buddhist Teachings", "Meditation", "Spiritual Guidance"],
+    bn: { name: "ভদন্ত মুনীন্দ্র বংশ ভিক্ষু", title: "জ্যেষ্ঠ ধর্মগুরু", lineage: "থেরবাদ বৌদ্ধধর্ম", teachingFocus: "বুদ্ধের শিক্ষা, ধ্যান ও আধ্যাত্মিক দিকনির্দেশনা", bio: "ভদন্ত মুনীন্দ্র বংশ ভিক্ষু একজন জ্যেষ্ঠ ধর্মগুরু, যিনি সমাজের সাথে বুদ্ধের শিক্ষা ভাগ করে নিতে নিবেদিত। তাঁর দিকনির্দেশনা শিক্ষার্থীদের দৈনন্দিন জীবনে প্রজ্ঞা, সচেতনতা ও করুণা গড়ে তুলতে সাহায্য করে।" },
   },
   {
     id: "venerable-vishuddhi-bangsha-bhikkhu",
@@ -41,11 +44,13 @@ export const venerables: Venerable[] = [
     imageUrl: "/images/venerables/vishuddhi-bangsha-bhikkhu.jpg",
     order: 3,
     specialties: ["Buddhist Teachings", "Meditation", "Monastic Practice"],
+    bn: { name: "ভদন্ত বিশুদ্ধি বংশ ভিক্ষু", title: "আবাসিক ভিক্ষু", lineage: "থেরবাদ বৌদ্ধধর্ম", teachingFocus: "বুদ্ধের শিক্ষা, ধ্যান ও বিনয় সাধনা", bio: "ভদন্ত বিশুদ্ধি বংশ ভিক্ষু বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে আবাসিক ভিক্ষু হিসেবে দায়িত্ব পালন করছেন এবং বুদ্ধের শিক্ষা ও ধ্যান অনুশীলনে দিকনির্দেশনা দিচ্ছেন। তাঁর উপস্থিতি ও নিষ্ঠা সংঘের আধ্যাত্মিক জীবনকে সমৃদ্ধ করে।" },
   },
   {
     id: "venerable-placeholder-4",
     slug: "venerable-placeholder-4",
     name: "Coming Soon",
+    bn: { name: "শীঘ্রই আসছে" },
     title: "",
     lineage: "",
     teachingFocus: "",
@@ -57,6 +62,7 @@ export const venerables: Venerable[] = [
     id: "venerable-placeholder-5",
     slug: "venerable-placeholder-5",
     name: "Coming Soon",
+    bn: { name: "শীঘ্রই আসছে" },
     title: "",
     lineage: "",
     teachingFocus: "",
@@ -68,6 +74,7 @@ export const venerables: Venerable[] = [
     id: "venerable-placeholder-6",
     slug: "venerable-placeholder-6",
     name: "Coming Soon",
+    bn: { name: "শীঘ্রই আসছে" },
     title: "",
     lineage: "",
     teachingFocus: "",

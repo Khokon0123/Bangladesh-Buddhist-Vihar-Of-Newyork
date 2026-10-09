@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getEvents } from "@/lib/server/kv";
+import { getLang } from "@/lib/getLang";
+import { loc } from "@/lib/i18n";
 import EventDetailClient from "./EventDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -11,8 +13,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const allEvents = await getEvents();
-  const event = allEvents.find((e) => e.slug === params.slug);
-  if (!event) return {};
+  const found = allEvents.find((e) => e.slug === params.slug);
+  if (!found) return {};
+  const event = loc(found, getLang());
   return {
     title: event.title,
     description: event.description.slice(0, 160),

@@ -157,6 +157,7 @@ export interface EventImage {
   src: string;
   alt: string;
   caption?: string;
+  bn?: { alt?: string; caption?: string };
 }
 
 export interface TempleEvent {
@@ -167,6 +168,7 @@ export interface TempleEvent {
   year: number;
   description: string;
   images: EventImage[];
+  bn?: { title?: string; description?: string };
 }
 
 // Site Configuration Types

@@ -2,6 +2,42 @@
 
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import { useLang } from "@/components/LanguageProvider";
+import { loc, num, type WithBn } from "@/lib/i18n";
+
+const en = {
+  heroAlt: "Buddhist Digital Resource Center",
+  searchPh: "Search resources...",
+  none: "No resources found matching your criteria.",
+  clear: "Clear filters",
+  helpTitle: "Need Help Finding Resources?",
+  helpText: "Our teachers can help guide you to the right resources for your practice and learning goals.",
+  contact: "Contact Our Teachers",
+  pdf: "PDF",
+  video: "Video",
+  external: "External Link",
+  categories: { All: "All", Sutras: "Sutras", Meditation: "Meditation", Teachings: "Teachings", Practice: "Practice", Reference: "Reference" },
+  found: (n: string, one: boolean) => `${n} ${one ? "resource" : "resources"} found`,
+  inCategory: (c: string) => ` in ${c}`,
+  forQuery: (q: string) => ` for "${q}"`,
+};
+
+const bn: typeof en = {
+  heroAlt: "বৌদ্ধ ডিজিটাল রিসোর্স সেন্টার",
+  searchPh: "উপকরণ খুঁজুন...",
+  none: "আপনার খোঁজের সাথে মেলে এমন কোনো উপকরণ পাওয়া যায়নি।",
+  clear: "ফিল্টার মুছুন",
+  helpTitle: "উপকরণ খুঁজে পেতে সাহায্য প্রয়োজন?",
+  helpText: "আপনার সাধনা ও শিক্ষার লক্ষ্য অনুযায়ী সঠিক উপকরণ খুঁজে পেতে আমাদের গুরুগণ আপনাকে সাহায্য করতে পারেন।",
+  contact: "আমাদের গুরুদের সাথে যোগাযোগ করুন",
+  pdf: "পিডিএফ",
+  video: "ভিডিও",
+  external: "বাহ্যিক লিংক",
+  categories: { All: "সব", Sutras: "সূত্র", Meditation: "ধ্যান", Teachings: "শিক্ষা", Practice: "অনুশীলন", Reference: "সহায়িকা" },
+  found: (n: string) => `${n}টি উপকরণ পাওয়া গেছে`,
+  inCategory: (c: string) => ` (${c})`,
+  forQuery: (q: string) => ` — “${q}”`,
+};
 
 // Icon Components
 const PDFIcon = () => (
@@ -84,7 +120,7 @@ interface Resource {
 }
 
 // Sample resource data - in a real app, this would come from a CMS or database
-const resources: Resource[] = [
+const resources: WithBn<Resource>[] = [
   {
     id: "dhammapada-pdf",
     title: "The Dhammapada (PDF)",
@@ -93,6 +129,7 @@ const resources: Resource[] = [
     type: "pdf",
     url: "#",
     author: "Various Translators",
+    bn: { title: "ধম্মপদ (পিডিএফ)", description: "অট্ঠকথাসহ ধম্মপদের পূর্ণাঙ্গ পাঠ", author: "বিভিন্ন অনুবাদক" },
   },
   {
     id: "meditation-guide",
@@ -102,6 +139,7 @@ const resources: Resource[] = [
     type: "pdf",
     url: "#",
     author: "Venerable Master Chen",
+    bn: { title: "নবীনদের জন্য ধ্যান নির্দেশিকা", description: "ধ্যান অনুশীলন শুরু করার ধাপে ধাপে নির্দেশিকা", author: "শ্রদ্ধেয় মাস্টার চেন" },
   },
   {
     id: "buddhist-philosophy-video",
@@ -112,6 +150,7 @@ const resources: Resource[] = [
     url: "#",
     author: "Venerable Bhikkhuni Sunita",
     duration: "45 min",
+    bn: { title: "বৌদ্ধ দর্শনের পরিচিতি", description: "বৌদ্ধধর্মের মূল ধারণাগুলো নিয়ে ভিডিও সিরিজ", author: "শ্রদ্ধেয় ভিক্ষুণী সুনীতা", duration: "৪৫ মিনিট" },
   },
   {
     id: "mindfulness-practice",
@@ -120,6 +159,7 @@ const resources: Resource[] = [
     category: "Practice",
     type: "external",
     url: "#",
+    bn: { title: "সচেতনতা চর্চার উপকরণ", description: "সচেতনতা চর্চার অনুশীলন ও কৌশলের সংকলন" },
   },
   {
     id: "heart-sutra-pdf",
@@ -129,6 +169,7 @@ const resources: Resource[] = [
     type: "pdf",
     url: "#",
     author: "Thich Nhat Hanh",
+    bn: { title: "হৃদয় সূত্র (পিডিএফ)", description: "হৃদয় সূত্রের অনুবাদ ও ব্যাখ্যা", author: "থিক নাত হান" },
   },
   {
     id: "walking-meditation-video",
@@ -139,6 +180,7 @@ const resources: Resource[] = [
     url: "#",
     author: "Venerable Ajahn Somchai",
     duration: "20 min",
+    bn: { title: "চংক্রমণ ধ্যানের নির্দেশনা", description: "চংক্রমণ ধ্যান অনুশীলনের ভিডিও নির্দেশিকা", author: "শ্রদ্ধেয় আজান সমচাই", duration: "২০ মিনিট" },
   },
   {
     id: "buddhist-dictionary",
@@ -147,6 +189,7 @@ const resources: Resource[] = [
     category: "Reference",
     type: "external",
     url: "#",
+    bn: { title: "বৌদ্ধ পরিভাষা অভিধান", description: "বৌদ্ধ পরিভাষার একটি পূর্ণাঙ্গ অভিধান" },
   },
   {
     id: "compassion-practice-pdf",
@@ -156,6 +199,7 @@ const resources: Resource[] = [
     type: "pdf",
     url: "#",
     author: "Venerable Bhikkhuni Pema",
+    bn: { title: "করুণা অনুশীলন নির্দেশিকা", description: "মৈত্রী ও করুণা অনুশীলনের বিস্তারিত নির্দেশিকা", author: "শ্রদ্ধেয় ভিক্ষুণী পেমা" },
   },
   {
     id: "zen-teachings-video",
@@ -166,6 +210,7 @@ const resources: Resource[] = [
     url: "#",
     author: "Venerable Master Wang",
     duration: "60 min",
+    bn: { title: "জেন শিক্ষা সিরিজ", description: "জেন বৌদ্ধধর্ম ও ধ্যান নিয়ে ভিডিও সিরিজ", author: "শ্রদ্ধেয় মাস্টার ওয়াং", duration: "৬০ মিনিট" },
   },
   {
     id: "sutra-library",
@@ -174,6 +219,7 @@ const resources: Resource[] = [
     category: "Sutras",
     type: "external",
     url: "#",
+    bn: { title: "ডিজিটাল সূত্র গ্রন্থাগার", description: "বৌদ্ধ সূত্র ও গ্রন্থের অনলাইন সংকলন" },
   },
   {
     id: "meditation-schedule",
@@ -182,6 +228,7 @@ const resources: Resource[] = [
     category: "Practice",
     type: "pdf",
     url: "#",
+    bn: { title: "ধ্যানের সময়সূচি টেমপ্লেট", description: "আপনার ধ্যান অনুশীলনের হিসাব রাখার জন্য প্রিন্টযোগ্য টেমপ্লেট" },
   },
   {
     id: "buddhist-ethics-video",
@@ -192,12 +239,16 @@ const resources: Resource[] = [
     url: "#",
     author: "Venerable Master Li",
     duration: "35 min",
+    bn: { title: "বৌদ্ধ নৈতিকতা ও শীল", description: "বৌদ্ধ নৈতিক নির্দেশনা নিয়ে ভিডিও বক্তৃতা", author: "শ্রদ্ধেয় মাস্টার লি", duration: "৩৫ মিনিট" },
   },
 ];
 
-const categories = ["All", "Sutras", "Meditation", "Teachings", "Practice", "Reference"];
+const categories = ["All", "Sutras", "Meditation", "Teachings", "Practice", "Reference"] as const;
+type Category = (typeof categories)[number];
 
 const ResourceCard = ({ resource }: { resource: Resource }) => {
+  const { lang } = useLang();
+  const ui = lang === "bn" ? bn : en;
   const getIcon = () => {
     switch (resource.type) {
       case "pdf":
@@ -212,11 +263,11 @@ const ResourceCard = ({ resource }: { resource: Resource }) => {
   const getTypeLabel = () => {
     switch (resource.type) {
       case "pdf":
-        return "PDF";
+        return ui.pdf;
       case "video":
-        return "Video";
+        return ui.video;
       case "external":
-        return "External Link";
+        return ui.external;
     }
   };
 
@@ -267,7 +318,7 @@ const ResourceCard = ({ resource }: { resource: Resource }) => {
               </>
             )}
           </div>
-          <span className="text-primary font-medium">{resource.category}</span>
+          <span className="text-primary font-medium">{ui.categories[resource.category as Category]}</span>
         </div>
       </div>
     </div>
@@ -298,11 +349,13 @@ const ResourceCard = ({ resource }: { resource: Resource }) => {
 };
 
 export default function ResourcesPage() {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("All");
 
   const filteredResources = useMemo(() => {
-    return resources.filter((resource) => {
+    return resources.map((r) => loc(r, lang)).filter((resource) => {
       const matchesSearch =
         searchQuery === "" ||
         resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -314,7 +367,7 @@ export default function ResourcesPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, lang]);
 
   return (
     <main id="main-content" className="min-h-screen bg-neutral-50">
@@ -322,7 +375,7 @@ export default function ResourcesPage() {
       <section style={{ position: "relative", overflow: "hidden", minHeight: "300px" }}>
         <img
           src="/images/Buddhist_Digital_Resource_Center_Logo.jpg"
-          alt="Buddhist Digital Resource Center"
+          alt={t.heroAlt}
           style={{ width: "100%", height: "300px", objectFit: "cover", objectPosition: "center center", display: "block" }}
         />
       </section>
@@ -339,7 +392,7 @@ export default function ResourcesPage() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search resources..."
+                  placeholder={t.searchPh}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-neutral-900 placeholder-neutral-400"
@@ -359,7 +412,7 @@ export default function ResourcesPage() {
                       : "bg-white text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
                   }`}
                 >
-                  {category}
+                  {t.categories[category]}
                 </button>
               ))}
             </div>
@@ -374,10 +427,9 @@ export default function ResourcesPage() {
             {/* Results Count */}
             <div className="mb-8">
               <p className="text-neutral-600">
-                {filteredResources.length}{" "}
-                {filteredResources.length === 1 ? "resource" : "resources"} found
-                {selectedCategory !== "All" && ` in ${selectedCategory}`}
-                {searchQuery && ` for "${searchQuery}"`}
+                {t.found(num(filteredResources.length, lang), filteredResources.length === 1)}
+                {selectedCategory !== "All" && t.inCategory(t.categories[selectedCategory])}
+                {searchQuery && t.forQuery(searchQuery)}
               </p>
             </div>
 
@@ -391,7 +443,7 @@ export default function ResourcesPage() {
             ) : (
               <div className="text-center py-16">
                 <p className="text-lg text-neutral-600 mb-4">
-                  No resources found matching your criteria.
+                  {t.none}
                 </p>
                 <button
                   onClick={() => {
@@ -400,7 +452,7 @@ export default function ResourcesPage() {
                   }}
                   className="text-primary hover:text-primary-dark font-medium"
                 >
-                  Clear filters
+                  {t.clear}
                 </button>
               </div>
             )}
@@ -413,17 +465,16 @@ export default function ResourcesPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-semibold text-primary-dark mb-4">
-              Need Help Finding Resources?
+              {t.helpTitle}
             </h2>
             <p className="text-lg text-neutral-600 mb-8">
-              Our teachers can help guide you to the right resources for your
-              practice and learning goals.
+              {t.helpText}
             </p>
             <Link
               href="/venerable-introduction"
               className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              Contact Our Teachers
+              {t.contact}
               <svg
                 className="w-5 h-5"
                 fill="none"

@@ -2,10 +2,29 @@
 
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import Link from "next/link";
+import { useLang } from "./LanguageProvider";
+import type { Lang } from "@/lib/i18n";
+
+const en = {
+  title: "Something went wrong",
+  text: "We apologize for the inconvenience. An unexpected error has occurred. Please try refreshing the page or return to the home page.",
+  refresh: "Refresh Page",
+  home: "Go Home",
+
+};
+
+const bn: typeof en = {
+  title: "কিছু একটা সমস্যা হয়েছে",
+  text: "অসুবিধার জন্য আমরা দুঃখিত। একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন অথবা হোম পেজে ফিরে যান।",
+  refresh: "পৃষ্ঠা রিফ্রেশ করুন",
+  home: "হোম পেজে যান",
+
+};
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  lang?: Lang;
 }
 
 interface State {
@@ -48,6 +67,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       // Default fallback UI
+      const t = this.props.lang === "bn" ? bn : en;
       return (
         <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
           <div className="max-w-md w-full text-center">
@@ -68,11 +88,10 @@ export class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
             <h1 className="text-2xl font-semibold text-primary-dark mb-4">
-              Something went wrong
+              {t.title}
             </h1>
             <p className="text-neutral-600 mb-6">
-              We apologize for the inconvenience. An unexpected error has occurred.
-              Please try refreshing the page or return to the home page.
+              {t.text}
             </p>
             {process.env.NODE_ENV === "development" && this.state.error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
@@ -86,13 +105,13 @@ export class ErrorBoundary extends Component<Props, State> {
                 onClick={() => window.location.reload()}
                 className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200"
               >
-                Refresh Page
+                {t.refresh}
               </button>
               <Link
                 href="/"
                 className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg font-medium hover:bg-primary/5 transition-colors duration-200"
               >
-                Go Home
+                {t.home}
               </Link>
             </div>
           </div>
@@ -113,6 +132,7 @@ export default function ErrorBoundaryWrapper({
 }: {
   children: ReactNode;
 }) {
-  return <ErrorBoundary>{children}</ErrorBoundary>;
+  const { lang } = useLang();
+  return <ErrorBoundary lang={lang}>{children}</ErrorBoundary>;
 }
 

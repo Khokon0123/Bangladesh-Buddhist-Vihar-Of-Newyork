@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { siteAPI, navigationAPI } from "@/lib/api/content";
+import { siteAPI } from "@/lib/api/content";
+import { getDict, getLang } from "@/lib/getLang";
 
 // Social Icons (reused from Header for consistency)
 const FacebookIcon = () => (
@@ -38,19 +39,21 @@ const YouTubeIcon = () => (
 export default function Footer() {
   // Get site configuration from data API
   const siteConfig = siteAPI.getConfig();
-  const navigationItems = navigationAPI.getItems();
-  
-  // Build quick links from navigation items
-  const quickLinks = navigationItems
-    .filter(item => item.type === "link" && item.href)
-    .map(item => ({ href: item.href!, label: item.label }))
-    .concat(
-      navigationItems
-        .find(item => item.id === "practices")?.items?.map(item => ({
-          href: item.href,
-          label: item.label,
-        })) || []
-    );
+  const t = getDict();
+  const year = new Date().getFullYear().toLocaleString(getLang() === "bn" ? "bn-BD" : "en-US", { useGrouping: false });
+
+  const quickLinks = [
+    { href: "/", label: t.nav.home },
+    { href: "/learn-buddhism", label: t.nav.learnBuddhism },
+    { href: "/venerable-introduction", label: t.nav.venerables },
+    { href: "/blog", label: t.nav.blog },
+    { href: "/events", label: t.nav.events },
+    { href: "/book", label: t.nav.book },
+    { href: "/practices/dhamma-school", label: t.nav.dhammaSchool },
+    { href: "/practices/meditation", label: t.nav.meditation },
+    { href: "/resources", label: t.nav.resources },
+    { href: "/about", label: t.nav.about },
+  ];
 
   const socialLinks = [
     { href: siteConfig.socialLinks.facebook || "#", label: "Facebook", icon: <FacebookIcon /> },
@@ -66,36 +69,34 @@ export default function Footer() {
           {/* Temple Info */}
           <div className="lg:col-span-2">
             <h2 style={{ color: "#f5c21a" }} className="text-xl font-semibold mb-3">
-              Bangladesh Buddhist Vihara Of New York
+              {t.siteName}
             </h2>
             <p style={{ color: "rgba(255,255,255,0.7)" }} className="text-sm leading-relaxed mb-5">
-              A sanctuary for peace, wisdom, and compassion in the heart of Queens, New York.
+              {t.footer.tagline}
             </p>
             <blockquote style={{ borderLeftColor: "#f5c21a", background: "transparent", border: "none", borderLeft: "4px solid #f5c21a" }} className="pl-4 py-1 my-0 rounded-none">
               <p style={{ color: "rgba(255,255,255,0.85)" }} className="text-sm leading-relaxed">
-                &ldquo;{siteConfig.footer.quote}&rdquo;
+                &ldquo;{t.footer.quote}&rdquo;
               </p>
-              {siteConfig.footer.quoteAuthor && (
-                <footer style={{ color: "rgba(255,255,255,0.5)" }} className="mt-2 text-xs not-italic">
-                  — {siteConfig.footer.quoteAuthor}
-                </footer>
-              )}
+              <footer style={{ color: "rgba(255,255,255,0.5)" }} className="mt-2 text-xs not-italic">
+                — {t.footer.quoteAuthor}
+              </footer>
             </blockquote>
           </div>
 
           {/* Quick Links Section */}
           <div>
             <h3 style={{ color: "#f5c21a" }} className="text-sm font-semibold uppercase tracking-wider mb-4">
-              Quick Links
+              {t.footer.quickLinks}
             </h3>
-            <nav aria-label="Footer navigation">
-              <ul className="space-y-2">
+            <nav aria-label={t.aria.footerNav}>
+              <ul className="list-none m-0 p-0 grid grid-cols-2 gap-x-6">
                 {quickLinks.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.href} className="m-0">
                     <Link
                       href={link.href}
                       style={{ color: "rgba(255,255,255,0.65)" }}
-                      className="text-sm hover:text-white transition-colors duration-200 inline-block"
+                      className="text-sm hover:text-white transition-colors duration-200 inline-flex items-center no-underline"
                     >
                       {link.label}
                     </Link>
@@ -108,10 +109,10 @@ export default function Footer() {
           {/* Connect Section */}
           <div>
             <h3 style={{ color: "#f5c21a" }} className="text-sm font-semibold uppercase tracking-wider mb-4">
-              Connect
+              {t.footer.connect}
             </h3>
             <p style={{ color: "rgba(255,255,255,0.65)" }} className="text-sm mb-5 leading-relaxed">
-              Follow us for daily inspiration, teachings, and updates from our temple community.
+              {t.footer.follow}
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
@@ -135,15 +136,15 @@ export default function Footer() {
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }} className="pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p style={{ color: "rgba(255,255,255,0.45)" }} className="text-sm text-center md:text-left">
-              {siteConfig.footer.copyright}
+              © {year} {t.footer.copyright}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
               <Link href="/privacy" style={{ color: "rgba(255,255,255,0.45)" }} className="hover:text-white transition-colors duration-200">
-                Privacy Policy
+                {t.footer.privacy}
               </Link>
               <span style={{ color: "rgba(255,255,255,0.2)" }} aria-hidden="true">|</span>
               <Link href="/terms" style={{ color: "rgba(255,255,255,0.45)" }} className="hover:text-white transition-colors duration-200">
-                Terms of Service
+                {t.footer.terms}
               </Link>
             </div>
           </div>

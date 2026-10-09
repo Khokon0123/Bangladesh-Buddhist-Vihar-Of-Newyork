@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import { getEvents } from "@/lib/server/kv";
+import { getLang } from "@/lib/getLang";
 import EventsGalleryClient from "./EventsGalleryClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: "Temple Events Gallery",
   description:
     "Explore the community events and celebrations at Bangladesh Buddhist Vihara Of New York. Browse photos and highlights from Vesak, Kathina, and other sacred occasions.",
@@ -15,6 +16,15 @@ export const metadata: Metadata = {
     images: ["/images/WhatsApp Image 2026-04-25 at 14.44.58.jpeg"],
   },
 };
+
+export function generateMetadata(): Metadata {
+  if (getLang() !== "bn") return baseMetadata;
+  return {
+    ...baseMetadata,
+    title: "বিহারের অনুষ্ঠান গ্যালারি",
+    description: "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কের সামাজিক অনুষ্ঠান ও উৎসবগুলো দেখুন। বুদ্ধ পূর্ণিমা, কঠিন চীবর দান ও অন্যান্য পবিত্র উপলক্ষের ছবি ও মুহূর্ত।",
+  };
+}
 
 export default async function EventsPage() {
   const allEvents = await getEvents();

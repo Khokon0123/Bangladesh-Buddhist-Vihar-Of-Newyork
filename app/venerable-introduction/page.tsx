@@ -1,10 +1,44 @@
 import Link from "next/link";
+import { getLang } from "@/lib/getLang";
 import Image from "next/image";
 import { getAllVenerables } from "@/lib/data/venerables";
+import { loc } from "@/lib/i18n";
+
+const en = {
+  comingSoon: "Coming Soon",
+  tba: "To be announced",
+  lineage: "Lineage",
+  focus: "Teaching Focus",
+  more: "Learn More",
+  title: "Meet Our Venerables",
+  subtitle: "Learn from our respected teachers who guide our community with wisdom, compassion, and dedication",
+  aboutTeachers: "About Our Teachers",
+  intro: "Our venerable teachers come from diverse Buddhist traditions, bringing together centuries of wisdom and practice. Each teacher offers unique insights and guidance to help you on your spiritual journey.",
+  quote: "A teacher opens the door, but you must enter by yourself.",
+  quoteBy: "— Chinese Proverb",
+  closing: "We invite you to explore the teachings of our venerables and find the guidance that resonates with your path. Each teacher offers their unique perspective while honoring the timeless wisdom of the Buddha.",
+
+};
+
+const bn: typeof en = {
+  comingSoon: "শীঘ্রই আসছে",
+  tba: "শীঘ্রই ঘোষণা করা হবে",
+  lineage: "ধারা",
+  focus: "শিক্ষার মূল বিষয়",
+  more: "আরও জানুন",
+  title: "আমাদের ভান্তেদের সাথে পরিচিত হোন",
+  subtitle: "আমাদের শ্রদ্ধেয় গুরুদের কাছ থেকে শিখুন, যাঁরা প্রজ্ঞা, করুণা ও নিষ্ঠার সাথে আমাদের সংঘকে পথ দেখান",
+  aboutTeachers: "আমাদের গুরুদের সম্পর্কে",
+  intro: "আমাদের শ্রদ্ধেয় গুরুগণ বিভিন্ন বৌদ্ধ ঐতিহ্য থেকে এসেছেন এবং বহু শতাব্দীর প্রজ্ঞা ও সাধনার ধারা বহন করছেন। আপনার আধ্যাত্মিক যাত্রায় সহায়তার জন্য প্রত্যেকে দেন অনন্য অন্তর্দৃষ্টি ও দিকনির্দেশনা।",
+  quote: "গুরু দরজা খুলে দেন, কিন্তু প্রবেশ করতে হয় নিজেকেই।",
+  quoteBy: "— চীনা প্রবাদ",
+  closing: "আমাদের ভান্তেদের শিক্ষা অন্বেষণ করতে এবং আপনার পথের সাথে মেলে এমন দিকনির্দেশনা খুঁজে নিতে আপনাকে আমন্ত্রণ জানাই। বুদ্ধের চিরন্তন প্রজ্ঞার প্রতি শ্রদ্ধা রেখে প্রত্যেক গুরু তাঁর নিজস্ব দৃষ্টিভঙ্গি তুলে ধরেন।",
+
+};
 
 // Placeholder image component for when images aren't available
 const PlaceholderAvatar = ({ name }: { name: string }) => (
-  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary-dark/20 flex items-center justify-center" role="img" aria-label={`Portrait placeholder for ${name}`}>
+  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary-dark/20 flex items-center justify-center" role="img" aria-label={`${name}`}>
     <span className="text-4xl font-light text-primary-dark/60" aria-hidden="true">
       {name.charAt(0)}
     </span>
@@ -28,6 +62,7 @@ const VenerableCard = ({
   teachingFocus,
   imageUrl,
 }: VenerableCardProps) => {
+  const t = getLang() === "bn" ? bn : en;
   const isPlaceholder = id.startsWith("venerable-placeholder");
 
   if (isPlaceholder) {
@@ -39,8 +74,8 @@ const VenerableCard = ({
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
           </svg>
         </div>
-        <p className="text-lg font-semibold text-neutral-300">Coming Soon</p>
-        <p className="text-sm text-neutral-300 mt-1">To be announced</p>
+        <p className="text-lg font-semibold text-neutral-300">{t.comingSoon}</p>
+        <p className="text-sm text-neutral-300 mt-1">{t.tba}</p>
       </div>
     );
   }
@@ -80,17 +115,17 @@ const VenerableCard = ({
 
         <div className="space-y-3 pt-3 border-t border-neutral-100">
           <div>
-            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">Lineage</p>
+            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">{t.lineage}</p>
             <p className="text-sm text-neutral-700 leading-relaxed">{lineage}</p>
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">Teaching Focus</p>
+            <p className="text-xs uppercase tracking-wider text-neutral-400 mb-1">{t.focus}</p>
             <p className="text-sm text-neutral-600 leading-relaxed">{teachingFocus}</p>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center text-primary text-sm font-medium group-hover:gap-2 gap-1 transition-all duration-300">
-          <span>Learn More</span>
+          <span>{t.more}</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
@@ -101,8 +136,10 @@ const VenerableCard = ({
 };
 
 export default function VenerableIntroduction() {
+  const t = getLang() === "bn" ? bn : en;
   // Get venerables from centralized data source
-  const venerables = getAllVenerables();
+  const lang = getLang();
+  const venerables = getAllVenerables().map((v) => loc(v, lang));
 
   return (
     <main id="main-content" className="min-h-screen bg-neutral-50">
@@ -121,11 +158,10 @@ export default function VenerableIntroduction() {
               <PeopleIcon className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-white mb-6">
-              Meet Our Venerables
+              {t.title}
             </h1>
             <p className="text-xl sm:text-2xl text-white/95 leading-relaxed">
-              Learn from our respected teachers who guide our community with
-              wisdom, compassion, and dedication
+              {t.subtitle}
             </p>
           </div>
         </div>
@@ -135,12 +171,9 @@ export default function VenerableIntroduction() {
       <section aria-labelledby="introduction-heading" className="py-12 bg-white border-b border-neutral-200">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 id="introduction-heading" className="sr-only">About Our Teachers</h2>
+            <h2 id="introduction-heading" className="sr-only">{t.aboutTeachers}</h2>
             <p className="text-lg text-neutral-600 leading-relaxed">
-              Our venerable teachers come from diverse Buddhist traditions,
-              bringing together centuries of wisdom and practice. Each teacher
-              offers unique insights and guidance to help you on your spiritual
-              journey.
+              {t.intro}
             </p>
           </div>
         </div>
@@ -170,16 +203,13 @@ export default function VenerableIntroduction() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <blockquote className="font-quote text-quote-lg text-neutral-600 italic leading-relaxed border-l-4 border-gold-500 pl-6 py-2">
-              &ldquo;A teacher opens the door, but you must enter by yourself.&rdquo;
+              &ldquo;{t.quote}&rdquo;
               <footer className="mt-4 text-sm text-neutral-500 not-italic">
-                — Chinese Proverb
+                {t.quoteBy}
               </footer>
             </blockquote>
             <p className="mt-8 text-neutral-600 leading-relaxed">
-              We invite you to explore the teachings of our venerables and find
-              the guidance that resonates with your path. Each teacher offers
-              their unique perspective while honoring the timeless wisdom of the
-              Buddha.
+              {t.closing}
             </p>
           </div>
         </div>

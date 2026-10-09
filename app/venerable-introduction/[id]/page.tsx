@@ -1,7 +1,31 @@
 import Link from "next/link";
+import { getLang } from "@/lib/getLang";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getVenerableBySlug } from "@/lib/data/venerables";
+import { loc, type WithBn } from "@/lib/i18n";
+
+const en = {
+  back: "Back to All Venerables",
+  lineage: "Lineage",
+  focus: "Teaching Focus",
+  bio: "Biography",
+  teachings: "Teachings & Practices",
+  schedule: "Teaching Schedule",
+  join: "Join a Practice Session",
+
+};
+
+const bn: typeof en = {
+  back: "সকল ভান্তের তালিকায় ফিরে যান",
+  lineage: "ধারা",
+  focus: "শিক্ষার মূল বিষয়",
+  bio: "জীবনী",
+  teachings: "শিক্ষা ও সাধনা",
+  schedule: "শিক্ষাদানের সময়সূচি",
+  join: "সাধনা সেশনে যোগ দিন",
+
+};
 
 // Placeholder image component
 const PlaceholderAvatar = ({ name }: { name: string }) => (
@@ -25,7 +49,7 @@ interface VenerableDetail {
 }
 
 // Extended detail data for venerables
-const venerablesExtendedData: Record<string, { teachings: string[]; schedule?: string }> = {
+const venerablesExtendedData: Record<string, WithBn<{ teachings: string[]; schedule?: string }>> = {
   "venerable-mudita-ratna-bhikkhu": {
     teachings: [
       "Daily meditation practice and mindfulness",
@@ -34,6 +58,7 @@ const venerablesExtendedData: Record<string, { teachings: string[]; schedule?: s
       "Compassion practices and loving-kindness in daily life",
     ],
     schedule: "Weekly meditation sessions at Bangladesh Buddhist Vihara Of New York, Dharma talks monthly",
+    bn: { teachings: ["প্রতিদিনের ধ্যান অনুশীলন ও সচেতনতা", "আধুনিক জীবনে বৌদ্ধ নীতির প্রয়োগ", "চান ধ্যানের কৌশল ও প্রজ্ঞার শিক্ষা", "দৈনন্দিন জীবনে করুণা ও মৈত্রীর চর্চা"], schedule: "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে সাপ্তাহিক ধ্যান সেশন এবং মাসিক ধর্মদেশনা" },
   },
   "venerable-monindra-bangsha-bhikkhu": {
     teachings: [
@@ -43,6 +68,7 @@ const venerablesExtendedData: Record<string, { teachings: string[]; schedule?: s
       "Sutta study and Pali language",
     ],
     schedule: "Vipassana retreats monthly, weekly meditation classes on Wednesdays",
+    bn: { teachings: ["বিদর্শন (বিপস্সনা) ধ্যান", "বৌদ্ধ মনোবিজ্ঞান ও মানসিক সুস্থতা", "বৌদ্ধধর্মে নারীর সাধনা ও ক্ষমতায়ন", "সুত্ত অধ্যয়ন ও পালি ভাষা"], schedule: "প্রতি মাসে বিদর্শন রিট্রিট এবং প্রতি বুধবার সাপ্তাহিক ধ্যান ক্লাস" },
   },
   "venerable-vishuddhi-bangsha-bhikkhu": {
     teachings: [
@@ -52,6 +78,7 @@ const venerablesExtendedData: Record<string, { teachings: string[]; schedule?: s
       "Community support and spiritual guidance",
     ],
     schedule: "Available for guidance at Bangladesh Buddhist Vihara Of New York throughout the week",
+    bn: { teachings: ["বুদ্ধের শিক্ষা ও ধর্ম অধ্যয়ন", "ধ্যান অনুশীলন ও দিকনির্দেশনা", "ভিক্ষু-শৃঙ্খলা ও বিনয়", "সংঘের সহায়তা ও আধ্যাত্মিক দিকনির্দেশনা"], schedule: "সপ্তাহজুড়ে বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে দিকনির্দেশনার জন্য উপস্থিত থাকেন" },
   },
   "venerable-ajahn-somchai": {
     teachings: [
@@ -87,8 +114,12 @@ export default function VenerableDetailPage({
 }: {
   params: { id: string };
 }) {
-  const baseVenerable = getVenerableBySlug(params.id);
-  const extendedData = venerablesExtendedData[params.id];
+  const lang = getLang();
+  const t = lang === "bn" ? bn : en;
+  const found = getVenerableBySlug(params.id);
+  const ext = venerablesExtendedData[params.id];
+  const baseVenerable = found && loc(found, lang);
+  const extendedData = ext && loc(ext, lang);
 
   // If venerable not found, show 404
   if (!baseVenerable || !extendedData) {
@@ -126,7 +157,7 @@ export default function VenerableDetailPage({
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to All Venerables
+            {t.back}
           </Link>
 
           <div className="max-w-4xl mx-auto">
@@ -160,13 +191,13 @@ export default function VenerableDetailPage({
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm uppercase tracking-wider text-white/70 mb-1">
-                      Lineage
+                      {t.lineage}
                     </p>
                     <p className="text-white/95">{venerable.lineage}</p>
                   </div>
                   <div>
                     <p className="text-sm uppercase tracking-wider text-white/70 mb-1">
-                      Teaching Focus
+                      {t.focus}
                     </p>
                     <p className="text-white/95">{venerable.teachingFocus}</p>
                   </div>
@@ -185,7 +216,7 @@ export default function VenerableDetailPage({
               {/* Biography */}
               <div className="mb-10">
                 <h2 className="text-2xl sm:text-3xl font-semibold text-primary-dark mb-6">
-                  Biography
+                  {t.bio}
                 </h2>
                 <p className="text-neutral-700 leading-relaxed text-lg">
                   {venerable.biography}
@@ -195,7 +226,7 @@ export default function VenerableDetailPage({
               {/* Teachings */}
               <div className="mb-10 pt-10 border-t border-neutral-200">
                 <h2 className="text-2xl sm:text-3xl font-semibold text-primary-dark mb-6">
-                  Teachings & Practices
+                  {t.teachings}
                 </h2>
                 <ul className="space-y-3">
                   {venerable.teachings.map((teaching, index) => (
@@ -225,7 +256,7 @@ export default function VenerableDetailPage({
               {venerable.schedule && (
                 <div className="pt-10 border-t border-neutral-200">
                   <h2 className="text-2xl sm:text-3xl font-semibold text-primary-dark mb-6">
-                    Teaching Schedule
+                    {t.schedule}
                   </h2>
                   <p className="text-neutral-700 leading-relaxed text-lg">
                     {venerable.schedule}
@@ -250,13 +281,13 @@ export default function VenerableDetailPage({
                 >
                   <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
-                Back to All Venerables
+                {t.back}
               </Link>
               <Link
                 href="/practices/meditation"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
-                Join a Practice Session
+                {t.join}
                 <svg
                   className="w-5 h-5"
                   fill="none"

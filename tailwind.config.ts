@@ -66,7 +66,7 @@ const config: Config = {
       fontFamily: {
         // Calm, readable fonts using Next.js font optimization
         sans: [
-          "var(--font-inter)",
+          "var(--font-anek-bangla)",
           "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
@@ -78,6 +78,7 @@ const config: Config = {
         ],
         serif: [
           "var(--font-merriweather)",
+          "var(--font-anek-bangla)",
           '"Times New Roman"',
           "Times",
           "Georgia",
@@ -86,6 +87,7 @@ const config: Config = {
         // For quotes and special text
         quote: [
           "var(--font-merriweather)",
+          "var(--font-anek-bangla)",
           "Georgia",
           '"Times New Roman"',
           "serif",

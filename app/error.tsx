@@ -1,7 +1,24 @@
 "use client";
 
+import { useLang } from "@/components/LanguageProvider";
 import { useEffect } from "react";
 import Link from "next/link";
+
+const en = {
+  title: "Something went wrong",
+  text: "We apologize for the inconvenience. An unexpected error has occurred. Please try again or return to the home page.",
+  retry: "Try Again",
+  home: "Go Home",
+
+};
+
+const bn: typeof en = {
+  title: "কিছু একটা সমস্যা হয়েছে",
+  text: "অসুবিধার জন্য আমরা দুঃখিত। একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন অথবা হোম পেজে ফিরে যান।",
+  retry: "আবার চেষ্টা করুন",
+  home: "হোম পেজে যান",
+
+};
 
 /**
  * Global Error Page
@@ -14,6 +31,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { lang } = useLang();
+  const t = lang === "bn" ? bn : en;
   useEffect(() => {
     // Log error to error reporting service in production
     if (process.env.NODE_ENV === "production") {
@@ -42,11 +61,10 @@ export default function Error({
           </svg>
         </div>
         <h1 className="text-2xl font-semibold text-primary-dark mb-4">
-          Something went wrong
+          {t.title}
         </h1>
         <p className="text-neutral-600 mb-6">
-          We apologize for the inconvenience. An unexpected error has occurred.
-          Please try again or return to the home page.
+          {t.text}
         </p>
         {process.env.NODE_ENV === "development" && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
@@ -63,13 +81,13 @@ export default function Error({
             onClick={reset}
             className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200"
           >
-            Try Again
+            {t.retry}
           </button>
           <Link
             href="/"
             className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg font-medium hover:bg-primary/5 transition-colors duration-200"
           >
-            Go Home
+            {t.home}
           </Link>
         </div>
       </div>

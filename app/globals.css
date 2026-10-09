@@ -5,7 +5,6 @@
 @layer base {
   /* Root variables for consistent theming */
   :root {
-    --font-inter: var(--font-inter);
     --font-merriweather: var(--font-merriweather);
   }
 
@@ -41,7 +40,7 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    font-family: var(--font-anek-bangla), system-ui, -apple-system, sans-serif;
     /* Ensure proper text rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

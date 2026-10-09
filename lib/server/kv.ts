@@ -40,6 +40,19 @@ async function getRedis() {
   return new Redis({ url: config.url, token: config.token });
 }
 
+// Events saved before the Bangla translation existed have no `bn`. Reuse the built-in
+// translation as long as the English text still matches, so an edited event never shows stale Bangla.
+function withStaticBangla(event: TempleEvent): TempleEvent {
+  if (event.bn) return event;
+  const original = staticEvents.find((e) => e.id === event.id);
+  if (!original?.bn || original.title !== event.title || original.description !== event.description) return event;
+  return {
+    ...event,
+    bn: original.bn,
+    images: event.images.map((img) => img.bn ? img : { ...img, bn: original.images.find((o) => o.id === img.id && o.alt === img.alt)?.bn }),
+  };
+}
+
 export async function getEvents(): Promise<TempleEvent[]> {
   const redis = await getRedis();
   if (!redis) return [...staticEvents];
@@ -51,7 +64,7 @@ export async function getEvents(): Promise<TempleEvent[]> {
     // Merge: Redis events take priority; static events fill in anything not in Redis
     const redisIds = new Set(redisEvents.map((e) => e.id));
     const staticOnly = staticEvents.filter((e) => !redisIds.has(e.id));
-    return [...redisEvents, ...staticOnly];
+    return [...redisEvents.map(withStaticBangla), ...staticOnly];
   } catch {
     return [...staticEvents];
   }
