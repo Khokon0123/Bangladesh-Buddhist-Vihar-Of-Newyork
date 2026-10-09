@@ -8,12 +8,15 @@ import { loc, num, type Lang } from "@/lib/i18n";
 
 const en = {
   title: "Temple Events Gallery",
-  subtitle: "A living record of our community&apos;s sacred celebrations, teachings, and gatherings — year by year.",
+  subtitle: "A living record of our community's sacred celebrations, teachings, and gatherings — year by year.",
   filterLabel: "Filter events by year",
   year: "Year:",
   details: "View Details",
   noEvents: (y: string) => `No events recorded for ${y}.`,
   count: (n: string, count: number, y: string) => `${n} event${count !== 1 ? "s" : ""} in ${y}`,
+  upcoming: "Upcoming",
+  noUpcoming: "No upcoming events right now. Please check back soon.",
+  upcomingCount: (n: string, count: number) => `${n} upcoming event${count !== 1 ? "s" : ""}`,
 };
 
 const bn: typeof en = {
@@ -24,13 +27,18 @@ const bn: typeof en = {
   details: "বিস্তারিত দেখুন",
   noEvents: (y: string) => `${y} সালে কোনো অনুষ্ঠান নথিভুক্ত নেই।`,
   count: (n: string, _count: number, y: string) => `${y} সালে ${n}টি অনুষ্ঠান`,
+  upcoming: "আসন্ন",
+  noUpcoming: "এই মুহূর্তে কোনো আসন্ন অনুষ্ঠান নেই। শীঘ্রই আবার দেখুন।",
+  upcomingCount: (n: string) => `${n}টি আসন্ন অনুষ্ঠান`,
 };
 
 interface Props {
+  upcoming: TempleEvent[];
+  past: TempleEvent[];
   years: number[];
-  initialYear: number;
-  allEvents: TempleEvent[];
 }
+
+type Tab = "upcoming" | number;
 
 const CalendarIcon = () => (
   <svg
@@ -60,28 +68,31 @@ function formatDate(dateStr: string, lang: Lang): string {
   });
 }
 
-function filterAndSort(allEvents: TempleEvent[], year: number): TempleEvent[] {
-  return allEvents
-    .filter((e) => e.year === year)
+function eventsFor(tab: Tab, upcoming: TempleEvent[], past: TempleEvent[]): TempleEvent[] {
+  if (tab === "upcoming") return upcoming;
+  return past
+    .filter((e) => e.year === tab)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export default function EventsGalleryClient({
+  upcoming,
+  past,
   years,
-  initialYear,
-  allEvents,
 }: Props) {
   const { lang } = useLang();
   const t = lang === "bn" ? bn : en;
-  const [selectedYear, setSelectedYear] = useState(initialYear);
-  const [events, setEvents] = useState<TempleEvent[]>(() =>
-    filterAndSort(allEvents, initialYear)
-  );
-
-  const handleYearChange = (year: number) => {
-    setSelectedYear(year);
-    setEvents(filterAndSort(allEvents, year));
-  };
+  // Open on Upcoming when there is something coming up, otherwise on the latest year.
+  const [selected, setSelected] = useState<Tab>(upcoming.length > 0 || years.length === 0 ? "upcoming" : years[0]);
+  const events = eventsFor(selected, upcoming, past);
+  const tabClass = (active: boolean) => `
+                  px-5 py-2 rounded-full text-sm font-medium transition-all duration-200
+                  ${
+                    active
+                      ? "bg-primary text-white shadow-soft"
+                      : "bg-white text-neutral-700 border border-neutral-200 hover:bg-neutral-50 hover:border-primary/30"
+                  }
+                `;
 
   return (
     <>
@@ -124,19 +135,19 @@ export default function EventsGalleryClient({
             <span className="text-sm font-medium text-neutral-500 mr-1">
               {t.year}
             </span>
+            <button
+              onClick={() => setSelected("upcoming")}
+              aria-pressed={selected === "upcoming"}
+              className={tabClass(selected === "upcoming")}
+            >
+              {t.upcoming}
+            </button>
             {years.map((year) => (
               <button
                 key={year}
-                onClick={() => handleYearChange(year)}
-                aria-pressed={selectedYear === year}
-                className={`
-                  px-5 py-2 rounded-full text-sm font-medium transition-all duration-200
-                  ${
-                    selectedYear === year
-                      ? "bg-primary text-white shadow-soft"
-                      : "bg-white text-neutral-700 border border-neutral-200 hover:bg-neutral-50 hover:border-primary/30"
-                  }
-                `}
+                onClick={() => setSelected(year)}
+                aria-pressed={selected === year}
+                className={tabClass(selected === year)}
               >
                 {num(year, lang)}
               </button>
@@ -149,12 +160,14 @@ export default function EventsGalleryClient({
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {events.length === 0 ? (
           <div className="text-center py-20 text-neutral-500">
-            {t.noEvents(num(selectedYear, lang))}
+            {selected === "upcoming" ? t.noUpcoming : t.noEvents(num(selected, lang))}
           </div>
         ) : (
           <>
             <p className="text-sm text-neutral-500 mb-8">
-              {t.count(num(events.length, lang), events.length, num(selectedYear, lang))}
+              {selected === "upcoming"
+                ? t.upcomingCount(num(events.length, lang), events.length)
+                : t.count(num(events.length, lang), events.length, num(selected, lang))}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.map((e) => loc(e, lang)).map((event) => (

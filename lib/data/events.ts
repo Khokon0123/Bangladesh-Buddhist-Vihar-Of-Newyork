@@ -3,6 +3,66 @@ import { TempleEvent } from "@/lib/types/content";
 export const events: TempleEvent[] = [
   // 2026 Events
   {
+    id: "robe-offering-2026",
+    slug: "robe-offering-2026",
+    title: "Robe Offering Ceremony 2026",
+    date: "2026-11-01",
+    year: 2026,
+    description:
+      "The annual Kathina robe-offering ceremony, held after the rains retreat. Lay supporters will offer robes and requisites to the Sangha, continuing a tradition that dates back to the time of the Buddha. All are welcome to join this meritorious occasion. Program details will be announced.",
+    bn: {
+      title: "কঠিন চীবর দান ২০২৬",
+      description:
+        "বর্ষাবাস শেষে অনুষ্ঠিত বার্ষিক কঠিন চীবর দানোৎসব। উপাসক-উপাসিকাগণ সংঘকে চীবর ও প্রয়োজনীয় সামগ্রী দান করবেন—বুদ্ধের সময় থেকে চলে আসা এক ঐতিহ্য। এই পুণ্যময় অনুষ্ঠানে সবাইকে আমন্ত্রণ। অনুষ্ঠানসূচি পরে জানানো হবে।",
+    },
+    images: [
+      {
+        id: "robe-offering-2026-1",
+        src: "/images/monje.jpg",
+        alt: "A monk in saffron robes seated in meditation beside his alms bowl",
+        caption: "Robes and requisites are offered to the Sangha after the rains retreat",
+        bn: { alt: "ভিক্ষাপাত্রের পাশে ধ্যানমগ্ন চীবরধারী ভিক্ষু", caption: "বর্ষাবাস শেষে সংঘকে চীবর ও প্রয়োজনীয় সামগ্রী দান করা হয়" },
+      },
+      {
+        id: "robe-offering-2026-2",
+        src: "/images/WhatsApp Image 2026-04-25 at 14.44.55.jpeg",
+        alt: "The shrine hall of Bangladesh Buddhist Vihara of New York",
+        caption: "Our shrine hall, where the ceremony will be held",
+        bn: { alt: "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কের প্রার্থনা কক্ষ", caption: "আমাদের প্রার্থনা কক্ষ, যেখানে অনুষ্ঠানটি হবে" },
+      },
+    ],
+  },
+  {
+    id: "prabarana-purnima-2026",
+    slug: "prabarana-purnima-2026",
+    title: "Prabarana Purnima 2026",
+    date: "2026-10-25",
+    year: 2026,
+    description:
+      "Prabarana Purnima marks the end of the three-month rains retreat (Vassa), when the monks invite one another to point out any faults in their conduct during the retreat. Devotees will gather at the Vihara to observe this sacred full-moon day. Program details will be announced.",
+    bn: {
+      title: "প্রবারণা পূর্ণিমা ২০২৬",
+      description:
+        "প্রবারণা পূর্ণিমা তিন মাসব্যাপী বর্ষাবাসের সমাপ্তি নির্দেশ করে। এই দিনে ভিক্ষুগণ বর্ষাবাসকালীন আচরণের কোনো ত্রুটি থাকলে তা ধরিয়ে দিতে একে অপরকে আহ্বান (প্রবারণা) জানান। এই পবিত্র পূর্ণিমা তিথি পালনে উপাসক-উপাসিকাগণ বিহারে সমবেত হবেন। অনুষ্ঠানসূচি পরে জানানো হবে।",
+    },
+    images: [
+      {
+        id: "prabarana-2026-1",
+        src: "/images/WhatsApp Image 2026-04-25 at 14.44.55.jpeg",
+        alt: "The shrine hall of Bangladesh Buddhist Vihara of New York",
+        caption: "Our shrine hall, where Prabarana Purnima will be observed",
+        bn: { alt: "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কের প্রার্থনা কক্ষ", caption: "আমাদের প্রার্থনা কক্ষ, যেখানে প্রবারণা পূর্ণিমা পালিত হবে" },
+      },
+      {
+        id: "prabarana-2026-2",
+        src: "/images/buddha-lotus.jpg",
+        alt: "Buddha image among lotus leaves",
+        caption: "Honouring the Buddha on the full-moon day",
+        bn: { alt: "পদ্মপাতার মাঝে বুদ্ধমূর্তি", caption: "পূর্ণিমা তিথিতে বুদ্ধের প্রতি শ্রদ্ধা" },
+      },
+    ],
+  },
+  {
     id: "vipassana-meditation-2026",
     slug: "vipassana-meditation-2026",
     title: "Vipassana Meditation Course 2026",

@@ -29,17 +29,21 @@ export function generateMetadata(): Metadata {
 export default async function EventsPage() {
   const allEvents = await getEvents();
 
+  // An event stays "upcoming" through its own day, then moves into its year.
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }); // YYYY-MM-DD
+  const upcoming = allEvents.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+  const past = allEvents.filter((e) => e.date < today);
+
   const yearsSet = new Set<number>();
-  for (const e of allEvents) yearsSet.add(e.year);
+  for (const e of past) yearsSet.add(e.year);
   const years = Array.from(yearsSet).sort((a, b) => b - a);
-  const initialYear = years[0] ?? new Date().getFullYear();
 
   return (
     <main id="main-content">
       <EventsGalleryClient
-        allEvents={allEvents}
+        upcoming={upcoming}
+        past={past}
         years={years}
-        initialYear={initialYear}
       />
     </main>
   );
