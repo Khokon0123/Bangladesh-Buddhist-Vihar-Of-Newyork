@@ -60,16 +60,6 @@ const venerablesExtendedData: Record<string, WithBn<{ teachings: string[]; sched
     schedule: "Weekly meditation sessions at Bangladesh Buddhist Vihara Of New York, Dharma talks monthly",
     bn: { teachings: ["প্রতিদিনের ধ্যান অনুশীলন ও সচেতনতা", "আধুনিক জীবনে বৌদ্ধ নীতির প্রয়োগ", "চান ধ্যানের কৌশল ও প্রজ্ঞার শিক্ষা", "দৈনন্দিন জীবনে করুণা ও মৈত্রীর চর্চা"], schedule: "বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে সাপ্তাহিক ধ্যান সেশন এবং মাসিক ধর্মদেশনা" },
   },
-  "venerable-monindra-bangsha-bhikkhu": {
-    teachings: [
-      "Vipassana (insight) meditation",
-      "Buddhist psychology and mental well-being",
-      "Women's practice and empowerment in Buddhism",
-      "Sutta study and Pali language",
-    ],
-    schedule: "Vipassana retreats monthly, weekly meditation classes on Wednesdays",
-    bn: { teachings: ["বিদর্শন (বিপস্সনা) ধ্যান", "বৌদ্ধ মনোবিজ্ঞান ও মানসিক সুস্থতা", "বৌদ্ধধর্মে নারীর সাধনা ও ক্ষমতায়ন", "সুত্ত অধ্যয়ন ও পালি ভাষা"], schedule: "প্রতি মাসে বিদর্শন রিট্রিট এবং প্রতি বুধবার সাপ্তাহিক ধ্যান ক্লাস" },
-  },
   "venerable-vishuddhi-bangsha-bhikkhu": {
     teachings: [
       "Buddhist teachings and Dhamma study",
