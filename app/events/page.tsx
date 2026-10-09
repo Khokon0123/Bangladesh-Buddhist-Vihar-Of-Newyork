@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getEvents } from "@/lib/server/kv";
+import { getEvents, todayInNewYork } from "@/lib/server/kv";
 import { getLang } from "@/lib/getLang";
 import EventsGalleryClient from "./EventsGalleryClient";
 
@@ -30,7 +30,7 @@ export default async function EventsPage() {
   const allEvents = await getEvents();
 
   // An event stays "upcoming" through its own day, then moves into its year.
-  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }); // YYYY-MM-DD
+  const today = todayInNewYork();
   const upcoming = allEvents.filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date));
   const past = allEvents.filter((e) => e.date < today);
 

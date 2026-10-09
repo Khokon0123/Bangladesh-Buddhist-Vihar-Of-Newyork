@@ -381,7 +381,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Search and Filter Section */}
-      <section className="py-8 bg-white/95 border-b border-neutral-200 sticky top-20 z-40 backdrop-blur-sm">
+      <section className="py-8 bg-white/95 border-b border-neutral-200 sticky top-[var(--header-h,64px)] z-40 backdrop-blur-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Search Bar */}

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import SiteSearch from "./SiteSearch";
+import EventTicker from "./EventTicker";
+import type { TempleEvent } from "@/lib/types/content";
 import { useLang } from "./LanguageProvider";
 import type { Dict } from "@/lib/i18n";
 
@@ -97,7 +99,7 @@ const navLinks: { href: string; key: keyof Dict["nav"] }[] = [
   { href: "/about", key: "about" },
 ]
 
-export default function Header() {
+export default function Header({ upcoming = [] }: { upcoming?: TempleEvent[] }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -226,6 +228,7 @@ export default function Header() {
             </div>
           </div>
         </nav>
+        <EventTicker events={upcoming} />
       </header>
 
       {/* Mobile Menu Overlay */}
@@ -308,7 +311,7 @@ export default function Header() {
       {isSearchOpen && <SiteSearch onClose={closeSearch} />}
 
       {/* Spacer to prevent content from going under fixed header */}
-      <div className="h-16" aria-hidden="true" />
+      <div style={{ height: "var(--header-h, 64px)" }} aria-hidden="true" />
     </>
   );
 }

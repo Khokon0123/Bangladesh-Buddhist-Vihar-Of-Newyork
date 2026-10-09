@@ -276,7 +276,7 @@ export default function BlogPage() {
       </section>
 
       {/* Category Filters */}
-      <nav aria-label={t.categoriesLabel} className="py-8 bg-white border-b border-neutral-200 sticky top-20 z-40 backdrop-blur-sm bg-white/95">
+      <nav aria-label={t.categoriesLabel} className="py-8 bg-white border-b border-neutral-200 sticky top-[var(--header-h,64px)] z-40 backdrop-blur-sm bg-white/95">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <CategoryFilter
             categories={categories}

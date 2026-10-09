@@ -70,6 +70,16 @@ export async function getEvents(): Promise<TempleEvent[]> {
   }
 }
 
+// Today's date at the temple (New York), as YYYY-MM-DD. An event counts as upcoming through its own day.
+export function todayInNewYork(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+export async function getUpcomingEvents(): Promise<TempleEvent[]> {
+  const today = todayInNewYork();
+  return (await getEvents()).filter((e) => e.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+}
+
 export async function setEvents(events: TempleEvent[]): Promise<void> {
   const redis = await getRedis();
   if (!redis) {

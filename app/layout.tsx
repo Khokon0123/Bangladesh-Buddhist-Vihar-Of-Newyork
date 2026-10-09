@@ -6,6 +6,8 @@ import ErrorBoundaryWrapper from "@/components/ErrorBoundary";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { getLang } from "@/lib/getLang";
 import { dictionaries } from "@/lib/i18n";
+import { getUpcomingEvents } from "@/lib/server/kv";
+import type { CSSProperties } from "react";
 import "./globals.css";
 
 // Main font for both English and Bangla text
@@ -120,12 +122,15 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const lang = getLang();
+  const upcoming = await getUpcomingEvents();
+  // 64px nav + 36px events bar; fixed header spacer and sticky filter bars read this.
+  const headerHeight = { "--header-h": upcoming.length > 0 ? "100px" : "64px" } as CSSProperties;
   return (
     <html lang={lang}>
       <head>
@@ -140,6 +145,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${anekBangla.variable} ${merriweather.variable} font-sans antialiased flex flex-col min-h-screen`}
+        style={headerHeight}
       >
         <LanguageProvider lang={lang}>
         <ErrorBoundaryWrapper>
@@ -147,7 +153,7 @@ export default function RootLayout({
           <a href="#main-content" className="skip-to-main">
             {dictionaries[lang].skipToContent}
           </a>
-          <Header />
+          <Header upcoming={upcoming} />
           <div className="flex-1 w-full">
             {children}
           </div>

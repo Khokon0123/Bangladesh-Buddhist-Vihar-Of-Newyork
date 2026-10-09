@@ -21,7 +21,7 @@
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -39,7 +39,7 @@
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
     font-family: var(--font-anek-bangla), system-ui, -apple-system, sans-serif;
     /* Ensure proper text rendering */
     -webkit-font-smoothing: antialiased;
@@ -323,5 +323,22 @@
 
   .animate-shimmer {
     animation: shimmer 8s ease-in-out infinite;
+  }
+}
+
+/* Upcoming events bar under the header: two identical halves slide left-to-right forever */
+@keyframes ticker-ltr {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.ticker-track {
+  animation: ticker-ltr linear infinite;
+}
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
   }
 }
