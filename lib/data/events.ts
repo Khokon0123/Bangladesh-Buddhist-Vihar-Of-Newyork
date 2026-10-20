@@ -9,19 +9,19 @@ export const events: TempleEvent[] = [
     date: "2026-11-01",
     year: 2026,
     description:
-      "The annual Kathina robe-offering ceremony, held after the rains retreat. Lay supporters will offer robes and requisites to the Sangha, continuing a tradition that dates back to the time of the Buddha. All are welcome to join this meritorious occasion. Program details will be announced.",
+      "The annual Kathina robe-offering ceremony (Kathina Chibor Dan) will be held on Sunday, November 1, 2026 at Bangladesh Buddhist Vihara of New York. Venerable Pannadepa Mahathero will be the chief Dhamma speaker. After the rains retreat, lay supporters offer robes and requisites to the Sangha, continuing a tradition that dates back to the time of the Buddha. All are welcome to join this meritorious occasion. Further program details will be announced.",
     bn: {
-      title: "কঠিন চীবর দান ২০২৬",
+      title: "দানোত্তম শুভ কঠিন চীবর দানোৎসব ২০২৬",
       description:
-        "বর্ষাবাস শেষে অনুষ্ঠিত বার্ষিক কঠিন চীবর দানোৎসব। উপাসক-উপাসিকাগণ সংঘকে চীবর ও প্রয়োজনীয় সামগ্রী দান করবেন—বুদ্ধের সময় থেকে চলে আসা এক ঐতিহ্য। এই পুণ্যময় অনুষ্ঠানে সবাইকে আমন্ত্রণ। অনুষ্ঠানসূচি পরে জানানো হবে।",
+        "আগামী ১লা নভেম্বর ২০২৬, রবিবার বাংলাদেশ বৌদ্ধ বিহার, নিউ ইয়র্কে দানোত্তম শুভ কঠিন চীবর দানোৎসব অনুষ্ঠিত হবে। প্রধান সদ্ধর্মদেশক হিসেবে উপস্থিত থাকবেন ভদন্ত প্রজ্ঞাদীপ মহাথেরো। বর্ষাবাস শেষে উপাসক-উপাসিকাগণ সংঘকে চীবর ও প্রয়োজনীয় সামগ্রী দান করেন—বুদ্ধের সময় থেকে চলে আসা এক ঐতিহ্য। এই পুণ্যময় অনুষ্ঠানে সবাইকে আমন্ত্রণ। বিস্তারিত অনুষ্ঠানসূচি পরে জানানো হবে।",
     },
     images: [
       {
-        id: "robe-offering-2026-1",
-        src: "/images/monje.jpg",
-        alt: "A monk in saffron robes seated in meditation beside his alms bowl",
-        caption: "Robes and requisites are offered to the Sangha after the rains retreat",
-        bn: { alt: "ভিক্ষাপাত্রের পাশে ধ্যানমগ্ন চীবরধারী ভিক্ষু", caption: "বর্ষাবাস শেষে সংঘকে চীবর ও প্রয়োজনীয় সামগ্রী দান করা হয়" },
+        id: "robe-offering-2026-flyer",
+        src: "/images/kathina-2026-flyer.jpg",
+        alt: "Kathina Chibor Dan 2026 flyer — Sunday, November 1, 2026, chief Dhamma speaker Venerable Pannadepa Mahathero",
+        caption: "Kathina Chibor Danotsob 2026 — Sunday, November 1",
+        bn: { alt: "দানোত্তম শুভ কঠিন চীবর দানোৎসব ২০২৬-এর প্রচারপত্র — ১লা নভেম্বর ২০২৬, রবিবার; প্রধান সদ্ধর্মদেশক ভদন্ত প্রজ্ঞাদীপ মহাথেরো", caption: "দানোত্তম শুভ কঠিন চীবর দানোৎসব ২০২৬ — ১লা নভেম্বর, রবিবার" },
       },
       {
         id: "robe-offering-2026-2",
